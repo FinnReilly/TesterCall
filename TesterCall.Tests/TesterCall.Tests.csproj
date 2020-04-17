@@ -19,4 +19,9 @@
     <ProjectReference Include="..\TesterCall\TesterCall.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\AuthStrategies\" />
+    <Folder Include="Services\PostUrlFormEncodedTests\" />
+  </ItemGroup>
+
 </Project>
