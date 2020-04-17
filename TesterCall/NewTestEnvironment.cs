@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using System.Text;
 using TesterCall.Enums;
+using TesterCall.Holders;
 using TesterCall.Models;
 
 namespace TesterCall
@@ -19,6 +20,8 @@ namespace TesterCall
                     Position = 2,
                     HelpMessage = "Name of host/IP address")]
         public string Host { get; set; }
+        [Parameter(HelpMessage = "Make this the default environment")]
+        public SwitchParameter Default { get; set; } = false;
 
         protected override void ProcessRecord()
         {
@@ -27,6 +30,11 @@ namespace TesterCall
                 Protocol = Protocol,
                 Host = Host
             };
+
+            if (Default.ToBool())
+            {
+                DefaultTestEnvironmentHolder.Environment = output;
+            }
 
             WriteObject(output);
         }
