@@ -11,15 +11,12 @@ namespace TesterCall.Services.Usage
 {
     public class PostUrlFormEncodedService : IPostUrlFormEncodedService
     {
-        private readonly IDictionaryToUrlEncodedBodyService _contentCreateService;
         private readonly IResponseContentServiceFactory _contentReaderFactory;
         private readonly IHttpClientWrapper _client;
 
-        public PostUrlFormEncodedService(IDictionaryToUrlEncodedBodyService dictionaryToUrlEncodedBodyService,
-                                        IResponseContentServiceFactory responseContentServiceFactory,
+        public PostUrlFormEncodedService(IResponseContentServiceFactory responseContentServiceFactory,
                                         IHttpClientWrapper httpClient)
         {
-            _contentCreateService = dictionaryToUrlEncodedBodyService;
             _contentReaderFactory = responseContentServiceFactory;
             _client = httpClient;
         }
@@ -31,8 +28,7 @@ namespace TesterCall.Services.Usage
             {
                 request.Method = HttpMethod.Post;
                 request.RequestUri = new Uri(uri);
-                request.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-                request.Content = _contentCreateService.GetContent(content);
+                request.Content = new FormUrlEncodedContent(content);
 
                 using (var response = await _client.SendAsync(request))
                 {

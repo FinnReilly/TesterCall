@@ -1,8 +1,10 @@
-C:\Users\Finn\repos_general\TesterCall\TesterCall\bin\Debug\netstandard2.0\TesterCall.deps.json
 C:\Users\Finn\repos_general\TesterCall\TesterCall\bin\Debug\netstandard2.0\TesterCall.dll
-C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.csprojAssemblyReference.cache
+C:\Users\Finn\repos_general\TesterCall\TesterCall\bin\Debug\netstandard2.0\TesterCall.dll.config
+C:\Users\Finn\repos_general\TesterCall\TesterCall\bin\Debug\netstandard2.0\TesterCall.deps.json
+C:\Users\Finn\repos_general\TesterCall\TesterCall\bin\Debug\netstandard2.0\TesterCall.pdb
+C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.dll.config
 C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.AssemblyInfoInputs.cache
 C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.AssemblyInfo.cs
-C:\Users\Finn\repos_general\TesterCall\TesterCall\bin\Debug\netstandard2.0\TesterCall.pdb
 C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.pdb
+C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.csprojAssemblyReference.cache

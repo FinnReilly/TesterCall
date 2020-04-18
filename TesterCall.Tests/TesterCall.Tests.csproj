@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -20,8 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\AuthStrategies\" />
-    <Folder Include="Services\PostUrlFormEncodedTests\" />
+    <Folder Include="Services\Formatting\" />
   </ItemGroup>
 
 </Project>
