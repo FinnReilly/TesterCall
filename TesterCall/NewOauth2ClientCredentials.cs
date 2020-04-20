@@ -49,7 +49,8 @@ namespace TesterCall
             if (_postUrlEncodedService == null)
             {
                 _postUrlEncodedService = new PostUrlFormEncodedService(new ResponseContentServiceFactory(),
-                                                                        new HttpClientWrapper());
+                                                                        new HttpClientWrapper(),
+                                                                        _dateService);
             }
         }
 

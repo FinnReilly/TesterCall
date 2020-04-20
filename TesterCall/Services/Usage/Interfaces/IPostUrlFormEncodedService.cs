@@ -7,6 +7,6 @@ namespace TesterCall.Services.Usage.Interfaces
 {
     public interface IPostUrlFormEncodedService
     {
-        Task<TPostResult> GetPostResult<TPostResult>(string uri, IDictionary<string, string> content);
+        Task<(TimeSpan responseTime, TPostResult response)> GetPostResult<TPostResult>(string uri, IDictionary<string, string> content);
     }
 }

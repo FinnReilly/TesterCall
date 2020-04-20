@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TesterCall.Models;
 using TesterCall.Models.Auth;
 using TesterCall.Services.Usage.AuthStrategies.Interfaces;
 using TesterCall.Services.Usage.Interfaces;
@@ -9,7 +10,7 @@ using TesterCall.Services.UtilsAndWrappers.Interfaces;
 
 namespace TesterCall.Services.Usage.AuthStrategies
 {
-    public class Oauth2PasswordCredentials : IGetAuthorisationHeaderStrategy
+    public class Oauth2PasswordCredentials : IGetAuthorisationHeaderStrategy, IHasResponseTime
     {
         private readonly IDateTimeWrapper _dateService;
         private readonly IPostUrlFormEncodedService _postUrlEncodedService;
@@ -20,6 +21,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
         private string _userName;
         private string _password;
         private DateTime _expiryTime;
+        private TimeSpan _lastResponseTime;
         private Oauth2PasswordResponse _lastResponse;
 
         public Oauth2PasswordCredentials(IDateTimeWrapper dateTimeWrapper,
@@ -46,6 +48,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
         public string UserName => _userName;
         public string Password => _password;
         public DateTime ExpectedExpiry => _expiryTime;
+        public TimeSpan ResponseTime => _lastResponseTime;
 
         public async Task<string> GetHeader()
         {
@@ -53,15 +56,19 @@ namespace TesterCall.Services.Usage.AuthStrategies
             {
                 try
                 {
-                    _lastResponse = await _postUrlEncodedService
+                    var response = await _postUrlEncodedService
                                             .GetPostResult<Oauth2PasswordResponse>(_tokenUri,
                                                                                     new Dictionary<string, string>()
                                                                                     {
-                                                                                    { "client_id", _clientId },
-                                                                                    { "client_secret", _clientSecret },
-                                                                                    { "grant_type", "refresh_token" },
-                                                                                    { "refresh_token", _lastResponse.RefreshToken }
+                                                                                        { "client_id", _clientId },
+                                                                                        { "client_secret", _clientSecret },
+                                                                                        { "grant_type", "refresh_token" },
+                                                                                        { "refresh_token", _lastResponse.RefreshToken }
                                                                                     });
+                    _lastResponse = response.response;
+                    _lastResponseTime = response.responseTime;
+
+                    _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
                 } catch (Exception e)
                 {
                     //assumes this is due to refresh token expiry - may be wrong
@@ -72,7 +79,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
 
             if (_lastResponse == null)
             {
-                _lastResponse = await _postUrlEncodedService
+                var response = await _postUrlEncodedService
                                         .GetPostResult<Oauth2PasswordResponse>(_tokenUri,
                                                                                 new Dictionary<string, string>()
                                                                                 {
@@ -82,6 +89,8 @@ namespace TesterCall.Services.Usage.AuthStrategies
                                                                                     { "username", _userName },
                                                                                     { "password", _password }
                                                                                 });
+                _lastResponse = response.response;
+                _lastResponseTime = response.responseTime;
 
                 _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
             }

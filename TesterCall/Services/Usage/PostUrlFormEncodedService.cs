@@ -13,16 +13,19 @@ namespace TesterCall.Services.Usage
     {
         private readonly IResponseContentServiceFactory _contentReaderFactory;
         private readonly IHttpClientWrapper _client;
+        private readonly IDateTimeWrapper _dateTime;
 
         public PostUrlFormEncodedService(IResponseContentServiceFactory responseContentServiceFactory,
-                                        IHttpClientWrapper httpClient)
+                                        IHttpClientWrapper httpClient,
+                                        IDateTimeWrapper dateTimeWrapper)
         {
             _contentReaderFactory = responseContentServiceFactory;
             _client = httpClient;
+            _dateTime = dateTimeWrapper;
         }
 
-        public async Task<TPostResult> GetPostResult<TPostResult>(string uri, 
-                                                            IDictionary<string, string> content)
+        public async Task<(TimeSpan responseTime, TPostResult response)> GetPostResult<TPostResult>(string uri, 
+                                                                        IDictionary<string, string> content)
         {
             using (var request = new HttpRequestMessage())
             {
@@ -30,11 +33,15 @@ namespace TesterCall.Services.Usage
                 request.RequestUri = new Uri(uri);
                 request.Content = new FormUrlEncodedContent(content);
 
+                var startTime = _dateTime.Now;
                 using (var response = await _client.SendAsync(request))
                 {
+                    var endTime = _dateTime.Now;
                     response.EnsureSuccessStatusCode();
-                    return await _contentReaderFactory.GetService<TPostResult>()
-                                                        .ReadContent(response);
+                    var result = await _contentReaderFactory.GetService<TPostResult>()
+                                                            .ReadContent(response);
+
+                    return (endTime - startTime, result);
                 }
             }
         }

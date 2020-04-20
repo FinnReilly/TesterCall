@@ -31,7 +31,9 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
         private DateTime _afterExpiry;
         private string _returnedToken;
         private string _returnedRefreshToken;
+        private TimeSpan _responseTime;
         private Oauth2PasswordResponse _returnedResponse;
+        private (TimeSpan, Oauth2PasswordResponse) _returnedTuple;
         
         [TestInitialize]
         public void TestIntialiser()
@@ -56,6 +58,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
             _beforeExpiry = 18.April(2020).At(18, 41);
             _afterExpiry = 20.April(2020).At(20, 30);
 
+            _responseTime = new TimeSpan(0, 0, 0, 0, 30);
             _returnedResponse = new Oauth2PasswordResponse()
             {
                 AccessToken = _returnedToken,
@@ -63,11 +66,12 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
                 ExpiresIn = 100,
                 TokenType = "Bearer"
             };
+            _returnedTuple = (_responseTime, _returnedResponse);
 
             _dateService.Setup(s => s.Now).Returns(_beforeExpiry);
             _postUrlEncodedService.Setup(s => s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
                                                                                         It.IsAny<Dictionary<string, string>>()))
-                .Returns(Task.FromResult(_returnedResponse));
+                .Returns(Task.FromResult(_returnedTuple));
         }
 
         [TestMethod]
