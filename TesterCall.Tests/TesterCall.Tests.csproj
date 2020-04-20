@@ -19,8 +19,4 @@
     <ProjectReference Include="..\TesterCall\TesterCall.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Services\Formatting\" />
-  </ItemGroup>
-
 </Project>
