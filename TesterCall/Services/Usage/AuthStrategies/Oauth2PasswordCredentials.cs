@@ -40,6 +40,12 @@ namespace TesterCall.Services.Usage.AuthStrategies
         }
 
         public Oauth2PasswordResponse LastResponse => _lastResponse;
+        public string TokenUri => _tokenUri;
+        public string ClientId => _clientId;
+        public string ClientSecret => _clientSecret;
+        public string UserName => _userName;
+        public string Password => _password;
+        public DateTime ExpectedExpiry => _expiryTime;
 
         public async Task<string> GetHeader()
         {

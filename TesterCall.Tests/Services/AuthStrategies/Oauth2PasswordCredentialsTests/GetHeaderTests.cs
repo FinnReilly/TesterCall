@@ -95,7 +95,69 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
         [TestMethod]
         public async Task BehavesAsExpectedOnSecondCallWhenInDate()
         {
+            await _service.GetHeader();
 
+            var output = await _service.GetHeader();
+
+            _postUrlEncodedService.Verify(s => s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
+                                                                                        It.Is<Dictionary<string, string>>(dict => dict.ContainsKey("password")
+                                                                                                                                && dict["password"] == _password)), Times.Once);
+            _postUrlEncodedService.Verify(s => s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
+                                                                                    It.Is<Dictionary<string, string>>(dict => dict.ContainsKey("refresh_token"))), Times.Never);
+            output.Should().Be($"Bearer {_returnedToken}");
+            _service.LastResponse.Should().Be(_returnedResponse);
+        }
+
+        [TestMethod]
+        public async Task BehavesAsExpectedOnSecondCallWhenOutOfDate()
+        {
+            await _service.GetHeader();
+
+            _dateService.Setup(s => s.Now).Returns(_afterExpiry);
+            var newToken = Guid.NewGuid().ToString();
+            _returnedResponse.AccessToken = newToken;
+            var output = await _service.GetHeader();
+
+            _postUrlEncodedService.Verify(s => s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
+                                                                                       It.Is<Dictionary<string, string>>(dict => dict.ContainsKey("password")
+                                                                                                                               && dict["password"] == _password)), Times.Once);
+            _postUrlEncodedService.Verify(s => s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
+                                                                                        It.Is<Dictionary<string, string>>(dict => dict.ContainsKey("client_id")
+                                                                                                                                && dict["client_id"] == _clientId
+                                                                                                                                && dict.ContainsKey("client_secret")
+                                                                                                                                && dict["client_secret"] == _clientSecret
+                                                                                                                                && dict.ContainsKey("grant_type")
+                                                                                                                                && dict["grant_type"] == "refresh_token"
+                                                                                                                                && dict.ContainsKey("refresh_token")
+                                                                                                                                && dict["refresh_token"] == _returnedRefreshToken)), Times.Once);
+            output.Should().Be($"Bearer {newToken}");
+        }
+
+        [TestMethod]
+        public async Task BehavesCorrectlyInEventOfRefreshTokenFail()
+        {
+            await _service.GetHeader();
+
+            _dateService.Setup(s => s.Now).Returns(_afterExpiry);
+            var testException = new Exception();
+            _postUrlEncodedService.Setup(s =>
+                                    s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
+                                                                            It.Is<Dictionary<string, string>>(dict => dict.ContainsKey("grant_type")
+                                                                                                                    && dict["grant_type"] == "refresh_token")))
+                .Throws(testException);
+            var shouldBeTestException = new Exception();
+
+            try 
+            {
+                await _service.GetHeader();
+            }
+            catch (Exception e)
+            {
+                shouldBeTestException = e;
+            }
+
+            _service.LastResponse.Should().BeNull();
+            shouldBeTestException.Should().Be(testException);
         }
     }
 }

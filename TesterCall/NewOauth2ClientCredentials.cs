@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TesterCall.Services.Usage;
 using TesterCall.Services.Usage.AuthStrategies;
@@ -59,7 +60,13 @@ namespace TesterCall
                                                     ClientId,
                                                     ClientSecret);
 
-            Task.Run(async () => await output.GetHeader());
+            var task = output.GetHeader();
+
+            while (!task.IsCompleted && !task.IsFaulted)
+            {
+                WriteProgress(new ProgressRecord(0, "Oauth 2 token request", "in progress"));
+                Thread.Sleep(1);
+            }
 
             WriteObject(output);
         }

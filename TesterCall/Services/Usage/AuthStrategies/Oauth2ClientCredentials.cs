@@ -34,6 +34,10 @@ namespace TesterCall.Services.Usage.AuthStrategies
         }
 
         public Oauth2BaseResponse LastResponse => _lastResponse;
+        public string TokenUri => _tokenUri;
+        public string ClientId => _clientId;
+        public string ClientSecret => _clientSecret;
+        public DateTime ExpectedExpiry => _expiryTime;
 
         public async Task<string> GetHeader()
         {
