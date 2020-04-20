@@ -26,7 +26,7 @@ namespace TesterCall.Powershell
 
             if (awaitableTask.IsFaulted)
             {
-                throw awaitableTask.Exception.InnerException;
+                throw awaitableTask.Exception;
             }
         }
 

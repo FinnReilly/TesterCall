@@ -40,6 +40,8 @@ namespace TesterCall
             var output = new BasicAuthCredentials(_encodeService,
                                                     UserName,
                                                     Password);
+
+            WriteObject(output);
         }
     }
 }

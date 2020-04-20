@@ -93,7 +93,6 @@ C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\TesterCall.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\TesterCall.pdb
-C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\TesterCall.dll.config
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.csprojAssemblyReference.cache
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.AssemblyInfoInputs.cache
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.AssemblyInfo.cs
