@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Management.Automation;
 using System.Text;
 using System.Threading.Tasks;
+using TesterCall.Powershell;
 using TesterCall.Services.Usage;
 using TesterCall.Services.Usage.AuthStrategies;
 using TesterCall.Services.Usage.Formatting;
@@ -14,7 +15,7 @@ namespace TesterCall
 {
     [Cmdlet(VerbsCommon.New, "Oauth2PasswordCredentials")]
     [OutputType(typeof(Oauth2PasswordCredentials))]
-    public class NewOauth2PasswordCredentials : Cmdlet
+    public class NewOauth2PasswordCredentials : TesterCallCmdlet
     {
         private IDateTimeWrapper _dateService;
         private IPostUrlFormEncodedService _postUrlEncodedService;
@@ -71,7 +72,9 @@ namespace TesterCall
                                                         UserName,
                                                         Password);
 
-            Task.Run(async () => await output.GetHeader());
+            Await(output.GetHeader(),
+                    "Oauth 2 Password Credentials Token Request",
+                    "In progress");
 
             WriteObject(output);
         }

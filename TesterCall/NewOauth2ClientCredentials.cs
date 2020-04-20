@@ -4,6 +4,7 @@ using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TesterCall.Powershell;
 using TesterCall.Services.Usage;
 using TesterCall.Services.Usage.AuthStrategies;
 using TesterCall.Services.Usage.Formatting;
@@ -15,7 +16,7 @@ namespace TesterCall
 {
     [Cmdlet(VerbsCommon.New, "Oauth2ClientCredentials")]
     [OutputType(typeof(Oauth2ClientCredentials))]
-    public class NewOauth2ClientCredentials : Cmdlet
+    public class NewOauth2ClientCredentials : TesterCallCmdlet
     {
         private IDateTimeWrapper _dateService;
         private IPostUrlFormEncodedService _postUrlEncodedService;
@@ -60,13 +61,9 @@ namespace TesterCall
                                                     ClientId,
                                                     ClientSecret);
 
-            var task = output.GetHeader();
-
-            while (!task.IsCompleted && !task.IsFaulted)
-            {
-                WriteProgress(new ProgressRecord(0, "Oauth 2 token request", "in progress"));
-                Thread.Sleep(1);
-            }
+            Await(output.GetHeader(), 
+                "Oauth 2 Client Credentials Token Request",
+                "In progress");
 
             WriteObject(output);
         }
