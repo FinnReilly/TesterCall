@@ -141,6 +141,10 @@
             "PowerShellStandard.Library": {
               "target": "Package",
               "version": "[7.0.0-preview.1, )"
+            },
+            "System.Reflection.Emit": {
+              "target": "Package",
+              "version": "[4.7.0, )"
             }
           },
           "imports": [

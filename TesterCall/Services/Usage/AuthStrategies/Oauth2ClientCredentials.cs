@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TesterCall.Models;
 using TesterCall.Models.Auth;
+using TesterCall.Models.Interfaces;
 using TesterCall.Services.Usage.AuthStrategies.Interfaces;
 using TesterCall.Services.Usage.Interfaces;
 using TesterCall.Services.UtilsAndWrappers.Interfaces;
