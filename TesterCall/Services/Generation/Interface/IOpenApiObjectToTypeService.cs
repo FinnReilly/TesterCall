@@ -7,6 +7,6 @@ namespace TesterCall.Services.Generation.Interface
 {
     public interface IOpenApiObjectToTypeService
     {
-        Type GetType(OpenApiObjectType inputObject);
+        Type GetType(OpenApiObjectType inputObject, string name);
     }
 }
