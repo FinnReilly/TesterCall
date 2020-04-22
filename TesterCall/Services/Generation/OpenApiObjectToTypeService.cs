@@ -15,23 +15,29 @@ namespace TesterCall.Services.Generation
         private readonly IOpenApiPrimitiveToTypeService _primitiveService;
         private readonly IOpenApiReferenceToTypeService _referenceService;
         private readonly IStealFieldsFromOpenApiObjectTypesService _fieldStealer;
+        private readonly IObjectsProcessingKeyStore _objectsKeyStore;
         private readonly IModuleBuilderProvider _module;
 
         public OpenApiObjectToTypeService(IOpenApiPrimitiveToTypeService openApiPrimitiveToTypeService,
                                             IOpenApiReferenceToTypeService openApiReferenceToTypeService,
                                             IStealFieldsFromOpenApiObjectTypesService stealFieldsFromOpenApiObjectTypesService,
+                                            IObjectsProcessingKeyStore objectsProcessingStore,
                                             IModuleBuilderProvider moduleBuilderProvider)
         {
             _primitiveService = openApiPrimitiveToTypeService;
             _referenceService = openApiReferenceToTypeService;
             _fieldStealer = stealFieldsFromOpenApiObjectTypesService;
+            _objectsKeyStore = objectsProcessingStore;
             _module = moduleBuilderProvider;
         }
 
         public Type GetType(OpenApiObjectType inputObject, string name)
         {
+            _objectsKeyStore.ThrowIfPresent(name);
+
             var typeBuilder = _module.Builder.DefineType(name,
                                                         TypeAttributes.Public);
+            _objectsKeyStore.AddPresent(name);
 
             foreach (var property in inputObject.Properties)
             {
@@ -68,6 +74,8 @@ namespace TesterCall.Services.Generation
             {
                 _fieldStealer.AddFields(typeBuilder, inputObject.AllOf);
             }
+
+            _objectsKeyStore.RemovePresent(name);
 
             return typeBuilder.CreateTypeInfo();
         }
