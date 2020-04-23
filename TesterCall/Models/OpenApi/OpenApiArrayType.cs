@@ -8,6 +8,6 @@ namespace TesterCall.Models.OpenApi
     public class OpenApiArrayType : IOpenApiType
     {
         public string Type { get; set; } = "array";
-        public IEnumerable<IOpenApiType> Items { get; set; }
+        public IOpenApiType Items { get; set; }
     }
 }

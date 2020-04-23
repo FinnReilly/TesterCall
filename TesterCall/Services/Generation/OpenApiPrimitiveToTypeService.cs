@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TesterCall.Extensions;
 using TesterCall.Models.OpenApi;
 using TesterCall.Services.Generation.Interface;
 
@@ -29,7 +30,7 @@ namespace TesterCall.Services.Generation
                 { "date-time", typeof(DateTime) }
             };
 
-            if (primitive.GetType() == typeof(OpenApiEnumType))
+            if (primitive.Matches<OpenApiEnumType>())
             {
                 return _enumService.GetType((OpenApiEnumType)primitive);
             }

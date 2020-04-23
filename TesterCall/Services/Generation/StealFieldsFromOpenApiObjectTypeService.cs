@@ -11,34 +11,25 @@ namespace TesterCall.Services.Generation
 {
     public class StealFieldsFromOpenApiObjectTypeService : IStealFieldsFromOpenApiObjectTypesService
     {
-        private readonly IOpenApiObjectToTypeService _objectService;
-        private readonly IOpenApiReferenceToTypeService _referenceService;
+        private readonly IOpenApiUmbrellaTypeResolver _typeResolver;
 
-        public StealFieldsFromOpenApiObjectTypeService(IOpenApiObjectToTypeService openApiObjectToTypeService,
-                                                        IOpenApiReferenceToTypeService openApiReferenceToTypeService)
+        public StealFieldsFromOpenApiObjectTypeService(IOpenApiUmbrellaTypeResolver openApiUmbrellaTypeResolver)
         {
-            _objectService = openApiObjectToTypeService;
-            _referenceService = openApiReferenceToTypeService;
+            _typeResolver = openApiUmbrellaTypeResolver;
         }
 
-        public void AddFields(TypeBuilder typeBuilder, 
-                                IEnumerable<IOpenApiType> extendedTypes)
+        public void AddFields(IOpenApiObjectToTypeService openApiObjectToTypeService,
+                                TypeBuilder typeBuilder, 
+                                IEnumerable<IOpenApiType> extendedTypes,
+                                OpenApiDefinitionsModel definitions)
         {
             foreach (var openApiType in extendedTypes)
             {
                 Type donorType = typeof(object);
-                if (openApiType.GetType() == typeof(OpenApiObjectType))
-                {
-                    donorType = _objectService.GetType((OpenApiObjectType)openApiType,
-                                                        $"PropertiesHolder_{Guid.NewGuid()}");
-                }
-                if (openApiType.GetType() == typeof(OpenApiReferencedType))
-                {
-                    var asReferenced = (OpenApiReferencedType)openApiType;
-                    donorType = _referenceService.GetType(_objectService,
-                                                            asReferenced,
-                                                            asReferenced.Object.Definitions);
-                }
+                donorType = _typeResolver.GetType(openApiObjectToTypeService,
+                                                    openApiType,
+                                                    definitions,
+                                                    $"PropertyHolder_{Guid.NewGuid()}");
 
                 if (donorType == typeof(object))
                 {

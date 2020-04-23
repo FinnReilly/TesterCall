@@ -31,12 +31,8 @@ namespace TesterCall.Services.Generation
 
             if (!CurrentTypeHolder.Types.TryGetValue(typeName, out var existingType))
             {
-                var definedNotCreated = definitions.Definitions
-                                                    .FirstOrDefault(d => d.Key == typeName)?
-                                                    .Value;
-
-                //handle not defined
-                if (definedNotCreated == null)
+          
+                if (!definitions.Definitions.TryGetValue(typeName, out var definedNotCreated))
                 {
                     throw new ArgumentException($"Referenced type {typeName} is not defined in OpenApi document");
                 }
@@ -45,6 +41,7 @@ namespace TesterCall.Services.Generation
                 _objectKeyStore.ThrowIfPresent(typeName);
 
                 return _objectService.GetType(definedNotCreated,
+                                                definitions,
                                                 typeName);
             }
 

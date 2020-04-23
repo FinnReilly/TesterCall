@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TesterCall.Extensions;
 using TesterCall.Models.OpenApi;
 using TesterCall.Models.OpenApi.Interfaces;
 using TesterCall.Services.Generation.Interface;
@@ -24,28 +25,29 @@ namespace TesterCall.Services.Generation
                             OpenApiDefinitionsModel definitions,
                             string suggestedObjectName = null)
         {
-            if (Match<OpenApiPrimitiveType>(openApiType))
+            if (openApiType.Matches<OpenApiPrimitiveType>())
             {
                 return _primitiveService.GetType((OpenApiPrimitiveType)openApiType);
             }
 
-            if (Match<OpenApiReferencedType>(openApiType))
+            if (openApiType.Matches<OpenApiReferencedType>())
             {
                 return _referenceService.GetType((OpenApiReferencedType)openApiType,
                                                 definitions);
             }
 
-            if (Match<OpenApiObjectType>(openApiType))
+            if (openApiType.Matches<OpenApiObjectType>())
             {
                 return objectService.GetType((OpenApiObjectType)openApiType,
                                             definitions,
                                             suggestedObjectName);
             }
 
-            if (Match<OpenApiArrayType>(openApiType))
+            if (openApiType.Matches<OpenApiArrayType>())
             {
+                var memberType = ((OpenApiArrayType)openApiType).Items;
                 var arrayMemberType = GetType(objectService,
-                                            openApiType,
+                                            memberType,
                                             definitions,
                                             suggestedObjectName + "Member");
 
@@ -54,16 +56,6 @@ namespace TesterCall.Services.Generation
             
             throw new NotSupportedException($"Unable to convert unsupported " +
                 $"OpenApi Type {openApiType.GetType()}"); 
-        }
-
-        private bool Match<T>(object checkObject)
-        {
-            if (checkObject.GetType() == typeof(T))
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

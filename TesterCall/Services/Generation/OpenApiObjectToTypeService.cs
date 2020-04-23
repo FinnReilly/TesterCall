@@ -53,7 +53,10 @@ namespace TesterCall.Services.Generation
 
             if (inputObject.AllOf != null && inputObject.AllOf.Count() > 0)
             {
-                _fieldStealer.AddFields(typeBuilder, inputObject.AllOf);
+                _fieldStealer.AddFields(this,
+                                        typeBuilder, 
+                                        inputObject.AllOf,
+                                        definitions);
             }
 
             _objectsKeyStore.RemovePresent(name);

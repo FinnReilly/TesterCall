@@ -7,6 +7,6 @@ namespace TesterCall.Models.OpenApi
 {
     public class OpenApiDefinitionsModel
     {
-        public Dictionary<string, IOpenApiType> Definitions { get; set; }
+        public Dictionary<string, OpenApiObjectType> Definitions { get; set; }
     }
 }

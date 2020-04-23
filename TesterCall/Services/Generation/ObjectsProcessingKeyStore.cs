@@ -9,6 +9,11 @@ namespace TesterCall.Services.Generation
     {
         private List<string> _inProcessing;
 
+        public ObjectsProcessingKeyStore()
+        {
+            _inProcessing = new List<string>();
+        }
+
         public void AddPresent(string objectKey)
         {
             ThrowIfPresent(objectKey);
