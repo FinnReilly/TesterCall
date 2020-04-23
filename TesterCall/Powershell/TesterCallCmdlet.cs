@@ -4,6 +4,7 @@ using System.Management.Automation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TesterCall.Holders;
 
 namespace TesterCall.Powershell
 {
@@ -37,6 +38,18 @@ namespace TesterCall.Powershell
             Await(awaitableTask, taskName, taskMessage);
 
             return awaitableTask.Result;
+        }
+
+        protected virtual T UniqueSingleton<T>(T service)
+        {
+            if (!GlobalServiceHolder.Services.TryGetValue(typeof(T), 
+                                                            out var existing))
+            {
+                GlobalServiceHolder.Services[typeof(T)] = service;
+                return service;
+            }
+
+            return (T)existing;
         }
     }
 }
