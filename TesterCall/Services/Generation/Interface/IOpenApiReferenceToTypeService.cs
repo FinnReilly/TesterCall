@@ -7,8 +7,7 @@ namespace TesterCall.Services.Generation.Interface
 {
     public interface IOpenApiReferenceToTypeService
     {
-        Type GetType(IOpenApiObjectToTypeService objectTypeService,
-                    OpenApiReferencedType referencedType, 
+        Type GetType(OpenApiReferencedType referencedType, 
                     OpenApiDefinitionsModel definitions);
     }
 }

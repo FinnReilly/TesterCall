@@ -12,26 +12,25 @@ namespace TesterCall.Services.Generation
 {
     public class OpenApiObjectToTypeService : IOpenApiObjectToTypeService
     {
-        private readonly IOpenApiPrimitiveToTypeService _primitiveService;
-        private readonly IOpenApiReferenceToTypeService _referenceService;
+        private readonly IOpenApiUmbrellaTypeResolver _typeResolver;
         private readonly IStealFieldsFromOpenApiObjectTypesService _fieldStealer;
         private readonly IObjectsProcessingKeyStore _objectsKeyStore;
         private readonly IModuleBuilderProvider _module;
 
-        public OpenApiObjectToTypeService(IOpenApiPrimitiveToTypeService openApiPrimitiveToTypeService,
-                                            IOpenApiReferenceToTypeService openApiReferenceToTypeService,
+        public OpenApiObjectToTypeService(IOpenApiUmbrellaTypeResolver openApiUmbrellaTypeResolver,
                                             IStealFieldsFromOpenApiObjectTypesService stealFieldsFromOpenApiObjectTypesService,
                                             IObjectsProcessingKeyStore objectsProcessingStore,
                                             IModuleBuilderProvider moduleBuilderProvider)
         {
-            _primitiveService = openApiPrimitiveToTypeService;
-            _referenceService = openApiReferenceToTypeService;
+            _typeResolver = openApiUmbrellaTypeResolver;
             _fieldStealer = stealFieldsFromOpenApiObjectTypesService;
             _objectsKeyStore = objectsProcessingStore;
             _module = moduleBuilderProvider;
         }
 
-        public Type GetType(OpenApiObjectType inputObject, string name)
+        public Type GetType(OpenApiObjectType inputObject, 
+                            OpenApiDefinitionsModel definitions,
+                            string name)
         {
             _objectsKeyStore.ThrowIfPresent(name);
 
@@ -41,33 +40,15 @@ namespace TesterCall.Services.Generation
 
             foreach (var property in inputObject.Properties)
             {
-                if (property.Value.GetType() == typeof(OpenApiPrimitiveType))
-                {
-                    var primType = _primitiveService.GetType((OpenApiPrimitiveType)property.Value);
-                    var primName = property.Key;
+                var propName = property.Key;
+                var propType = _typeResolver.GetType(this,
+                                                    property.Value,
+                                                    definitions,
+                                                    $"{name}_{propName}");
 
-                    DefinePublicField(typeBuilder, primType, primName);
-                }
-
-                if (property.Value.GetType() == typeof(OpenApiReferencedType))
-                {
-                    var refType = _referenceService.GetType(this,
-                                                            (OpenApiReferencedType)property.Value,
-                                                            inputObject.Definitions);
-                    var refName = property.Key;
-
-                    DefinePublicField(typeBuilder, refType, refName);
-                }
-
-                if (property.Value.GetType() == typeof(OpenApiObjectType))
-                {
-                    var objectName = property.Key;
-                    var objectTypeName = $"{name}_{objectName}";
-                    var objectType = GetType((OpenApiObjectType)property.Value, 
-                                            objectTypeName);
-
-                    DefinePublicField(typeBuilder, objectType, objectName);
-                }
+                DefinePublicField(typeBuilder,
+                                    propType,
+                                    propName);
             }
 
             if (inputObject.AllOf != null && inputObject.AllOf.Count() > 0)
@@ -84,7 +65,9 @@ namespace TesterCall.Services.Generation
                                         Type type,
                                         string name)
         {
-            typeBuilder.DefineField(name, type, FieldAttributes.Public);
+            typeBuilder.DefineField(name, 
+                                    type, 
+                                    FieldAttributes.Public);
         }
     }
 }

@@ -8,7 +8,5 @@ namespace TesterCall.Models.OpenApi
     public class OpenApiReferencedType : IOpenApiType
     {
         public string Type { get; set; }
-
-        public OpenApiObjectType Object { get; set; }
     }
 }

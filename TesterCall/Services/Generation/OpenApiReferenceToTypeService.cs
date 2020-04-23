@@ -13,14 +13,18 @@ namespace TesterCall.Services.Generation
     {
         private readonly ILastTokenInPathService _lastTokenService;
         private readonly IObjectsProcessingKeyStore _objectKeyStore;
+        private readonly IOpenApiObjectToTypeService _objectService;
 
-        public OpenApiReferenceToTypeService(ILastTokenInPathService lastTokenInPathService)
+        public OpenApiReferenceToTypeService(ILastTokenInPathService lastTokenInPathService,
+                                            IObjectsProcessingKeyStore objectsProcessingKeyStore,
+                                            IOpenApiObjectToTypeService openApiObjectToTypeService)
         {
             _lastTokenService = lastTokenInPathService;
+            _objectKeyStore = objectsProcessingKeyStore;
+            _objectService = openApiObjectToTypeService;
         }
 
-        public Type GetType(IOpenApiObjectToTypeService objectTypeService, 
-                            OpenApiReferencedType referencedType, 
+        public Type GetType(OpenApiReferencedType referencedType, 
                             OpenApiDefinitionsModel definitions)
         {
             var typeName = _lastTokenService.GetLastToken(referencedType.Type);
@@ -40,7 +44,7 @@ namespace TesterCall.Services.Generation
                 //handle circular reference
                 _objectKeyStore.ThrowIfPresent(typeName);
 
-                return objectTypeService.GetType(definedNotCreated,
+                return _objectService.GetType(definedNotCreated,
                                                 typeName);
             }
 
