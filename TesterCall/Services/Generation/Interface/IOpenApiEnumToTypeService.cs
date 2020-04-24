@@ -7,6 +7,7 @@ namespace TesterCall.Services.Generation.Interface
 {
     public interface IOpenApiEnumToTypeService
     {
-        Type GetType(OpenApiEnumType enumeration);
+        Type GetType(OpenApiEnumType enumeration, 
+                    string name);
     }
 }

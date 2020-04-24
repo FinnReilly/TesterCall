@@ -27,7 +27,8 @@ namespace TesterCall.Services.Generation
         {
             if (openApiType.Matches<OpenApiPrimitiveType>())
             {
-                return _primitiveService.GetType((OpenApiPrimitiveType)openApiType);
+                return _primitiveService.GetType((OpenApiPrimitiveType)openApiType,
+                                                nameIfEnum:suggestedObjectName);
             }
 
             if (openApiType.Matches<OpenApiReferencedType>())

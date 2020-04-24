@@ -16,7 +16,8 @@ namespace TesterCall.Services.Generation
             _enumService = openApiEnumToTypeService;
         }
 
-        public Type GetType(OpenApiPrimitiveType primitive)
+        public Type GetType(OpenApiPrimitiveType primitive,
+                            string nameIfEnum)
         {
             var simpleTypeDict = new Dictionary<string, Type>()
             {
@@ -32,7 +33,8 @@ namespace TesterCall.Services.Generation
 
             if (primitive.Matches<OpenApiEnumType>())
             {
-                return _enumService.GetType((OpenApiEnumType)primitive);
+                return _enumService.GetType((OpenApiEnumType)primitive,
+                                            nameIfEnum);
             }
 
             if (simpleTypeDict.TryGetValue(primitive.Type, out var mappedType))

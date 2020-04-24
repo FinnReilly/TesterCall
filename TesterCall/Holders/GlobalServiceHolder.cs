@@ -6,6 +6,6 @@ namespace TesterCall.Holders
 {
     public static class GlobalServiceHolder
     {
-        public static Dictionary<Type, object> Services { get; set; }
+        public static Dictionary<Type, object> Services { get; set; } = new Dictionary<Type, object>();
     }
 }

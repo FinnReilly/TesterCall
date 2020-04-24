@@ -24,6 +24,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiPrimitiveToTypeServiceTest
 
         private OpenApiPrimitiveType _regularInputType;
         private OpenApiEnumType _enumInputType;
+        private string _nameIfEnum;
 
         [TestInitialize]
         public void TestInitialise()
@@ -34,15 +35,18 @@ namespace TesterCall.Tests.Services.Generation.OpenApiPrimitiveToTypeServiceTest
 
             _regularInputType = new OpenApiPrimitiveType();
             _enumInputType = new OpenApiEnumType();
+            _nameIfEnum = Guid.NewGuid().ToString();
 
-            _enumService.Setup(s => s.GetType(It.IsAny<OpenApiEnumType>()))
+            _enumService.Setup(s => s.GetType(_enumInputType,
+                                            _nameIfEnum))
                 .Returns(typeof(ReturnedEnum)).Verifiable();
         }
 
         [TestMethod]
         public void ReturnsEnumWhereAppropriate()
         {
-            var output = _service.GetType(_enumInputType);
+            var output = _service.GetType(_enumInputType,
+                                            _nameIfEnum);
 
             _enumService.Verify();
             output.Should().Be(typeof(ReturnedEnum));
@@ -62,7 +66,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiPrimitiveToTypeServiceTest
             _regularInputType.Type = type;
             _regularInputType.Format = format;
 
-            var output = _service.GetType(_regularInputType);
+            var output = _service.GetType(_regularInputType,
+                                            _nameIfEnum);
 
             output.Should().Be(expected);
         }
@@ -75,7 +80,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiPrimitiveToTypeServiceTest
             var expectedError = "No support available for primitive with type = hoobyNooby" +
                 " and format = arbitrary-nonsense";
 
-            _service.Invoking(s => s.GetType(_regularInputType))
+            _service.Invoking(s => s.GetType(_regularInputType,
+                                                _nameIfEnum))
                     .Should()
                     .Throw<NotSupportedException>()
                     .WithMessage(expectedError);

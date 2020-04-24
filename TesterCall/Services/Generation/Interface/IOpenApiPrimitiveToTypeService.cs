@@ -7,6 +7,7 @@ namespace TesterCall.Services.Generation.Interface
 {
     public interface IOpenApiPrimitiveToTypeService
     {
-        Type GetType(OpenApiPrimitiveType primitive);
+        Type GetType(OpenApiPrimitiveType primitive,
+                    string nameIfEnum);
     }
 }

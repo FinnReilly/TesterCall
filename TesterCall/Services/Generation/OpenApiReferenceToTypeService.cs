@@ -31,18 +31,21 @@ namespace TesterCall.Services.Generation
 
             if (!CurrentTypeHolder.Types.TryGetValue(typeName, out var existingType))
             {
-          
                 if (!definitions.Definitions.TryGetValue(typeName, out var definedNotCreated))
                 {
-                    throw new ArgumentException($"Referenced type {typeName} is not defined in OpenApi document");
+                    throw new NotSupportedException($"Referenced type {typeName} is not defined in OpenApi document");
                 }
 
                 //handle circular reference
                 _objectKeyStore.ThrowIfPresent(typeName);
 
-                return _objectService.GetType(definedNotCreated,
-                                                definitions,
-                                                typeName);
+                var createdType = _objectService.GetType(definedNotCreated,
+                                                        definitions,
+                                                        typeName);
+
+                CurrentTypeHolder.Types[typeName] = createdType;
+
+                return createdType;
             }
 
             return existingType;

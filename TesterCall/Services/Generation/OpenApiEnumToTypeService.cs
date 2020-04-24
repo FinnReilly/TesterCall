@@ -18,9 +18,10 @@ namespace TesterCall.Services.Generation
             _module = moduleBuilderProvider;
         }
 
-        public Type GetType(OpenApiEnumType enumeration)
+        public Type GetType(OpenApiEnumType enumeration,
+                            string name)
         {
-            var enumBuilder = _module.Builder.DefineEnum("Name",
+            var enumBuilder = _module.Builder.DefineEnum(name,
                                                         TypeAttributes.Public,
                                                         typeof(int));
             var i = 0;

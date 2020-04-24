@@ -51,7 +51,7 @@ namespace TesterCall.Services.Generation
                                     propName);
             }
 
-            if (inputObject.AllOf != null && inputObject.AllOf.Count() > 0)
+            if (inputObject.AllOf != null && inputObject.AllOf.Any())
             {
                 _fieldStealer.AddFields(this,
                                         typeBuilder, 

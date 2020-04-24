@@ -6,6 +6,6 @@ namespace TesterCall.Holders
 {
     public static class CurrentTypeHolder
     {
-        public static Dictionary<string, Type> Types { get; set; }
+        public static Dictionary<string, Type> Types { get; set; } = new Dictionary<string, Type>();
     }
 }
