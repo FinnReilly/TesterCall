@@ -12,6 +12,6 @@ namespace TesterCall.Services.Generation.Interface
         void AddFields(IOpenApiObjectToTypeService openApiObjectToTypeService,
                         TypeBuilder typeBuilder,
                         IEnumerable<IOpenApiType> extendedTypes,
-                        OpenApiDefinitionsModel definitions);
+                        Dictionary<string, OpenApiObjectType> definitions);
     }
 }

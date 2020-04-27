@@ -24,7 +24,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
 
         private OpenApiUmbrellaTypeResolver _service;
 
-        private OpenApiDefinitionsModel _definitions;
+        private Dictionary<string, OpenApiObjectType> _definitions;
         private string _suggestedName;
         private OpenApiPrimitiveType _primitive;
         private OpenApiReferencedType _referenced;
@@ -41,10 +41,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
             _service = new OpenApiUmbrellaTypeResolver(_primitiveService.Object,
                                                         _referenceService.Object);
 
-            _definitions = new OpenApiDefinitionsModel()
-            {
-                Definitions = new Dictionary<string, OpenApiObjectType>()
-            };
+            _definitions = new Dictionary<string, OpenApiObjectType>();
             _suggestedName = Guid.NewGuid().ToString();
             _primitive = new OpenApiPrimitiveType();
             _referenced = new OpenApiReferencedType();

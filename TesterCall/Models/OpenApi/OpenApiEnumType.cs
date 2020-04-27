@@ -9,6 +9,5 @@ namespace TesterCall.Models.OpenApi
     {
         public override string Type { get; set; } = "string";
         public string[] Enum { get; set; }
-        public string GeneratedTypeName { get; set; }
     }
 }

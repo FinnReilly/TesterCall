@@ -21,7 +21,7 @@ namespace TesterCall.Services.Generation
         public void AddFields(IOpenApiObjectToTypeService openApiObjectToTypeService,
                                 TypeBuilder typeBuilder, 
                                 IEnumerable<IOpenApiType> extendedTypes,
-                                OpenApiDefinitionsModel definitions)
+                                Dictionary<string, OpenApiObjectType> definitions)
         {
             foreach (var openApiType in extendedTypes)
             {

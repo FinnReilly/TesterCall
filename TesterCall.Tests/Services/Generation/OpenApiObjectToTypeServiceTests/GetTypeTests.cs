@@ -25,7 +25,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiObjectToTypeServiceTests
         private OpenApiObjectToTypeService _service;
 
         private OpenApiObjectType _inputType;
-        private OpenApiDefinitionsModel _inputDefinitions;
+        private Dictionary<string, OpenApiObjectType> _inputDefinitions;
         private OpenApiPrimitiveType _prop1;
         private OpenApiPrimitiveType _prop2;
         private string _name;
@@ -53,7 +53,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiObjectToTypeServiceTests
                     { "SecondProperty", _prop2 }
                 }
             };
-            _inputDefinitions = new OpenApiDefinitionsModel();
+            _inputDefinitions = new Dictionary<string, OpenApiObjectType>();
             _name = Guid.NewGuid().ToString();
 
             _typeResolver.Setup(s => s.GetType(_service,

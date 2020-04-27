@@ -22,7 +22,7 @@ namespace TesterCall.Services.Generation
 
         public Type GetType(IOpenApiObjectToTypeService objectService, 
                             IOpenApiType openApiType,
-                            OpenApiDefinitionsModel definitions,
+                            Dictionary<string, OpenApiObjectType> definitions,
                             string suggestedObjectName = null)
         {
             if (openApiType.Matches<OpenApiPrimitiveType>())

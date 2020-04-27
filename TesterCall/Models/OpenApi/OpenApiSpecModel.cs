@@ -8,6 +8,6 @@ namespace TesterCall.Models.OpenApi
     {
         public OpenApiInfoModel Info { get; set; }
         public IEnumerable<OpenApiEndpointModel> Endpoints { get; set; }
-        public OpenApiDefinitionsModel Definitions { get; set; } 
+        public IDictionary<string, OpenApiObjectType> Definitions { get; set; } 
     }
 }

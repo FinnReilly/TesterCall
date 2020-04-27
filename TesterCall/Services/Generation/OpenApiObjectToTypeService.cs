@@ -29,7 +29,7 @@ namespace TesterCall.Services.Generation
         }
 
         public Type GetType(OpenApiObjectType inputObject, 
-                            OpenApiDefinitionsModel definitions,
+                            Dictionary<string, OpenApiObjectType> definitions,
                             string name)
         {
             _objectsKeyStore.ThrowIfPresent(name);

@@ -25,13 +25,13 @@ namespace TesterCall.Services.Generation
         }
 
         public Type GetType(OpenApiReferencedType referencedType, 
-                            OpenApiDefinitionsModel definitions)
+                            Dictionary<string, OpenApiObjectType> definitions)
         {
             var typeName = _lastTokenService.GetLastToken(referencedType.Type);
 
             if (!CurrentTypeHolder.Types.TryGetValue(typeName, out var existingType))
             {
-                if (!definitions.Definitions.TryGetValue(typeName, out var definedNotCreated))
+                if (!definitions.TryGetValue(typeName, out var definedNotCreated))
                 {
                     throw new NotSupportedException($"Referenced type {typeName} is not defined in OpenApi document");
                 }

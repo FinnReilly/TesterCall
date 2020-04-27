@@ -32,7 +32,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
 
         private OpenApiReferencedType _inputType;
         private OpenApiObjectType _definedNotCreated;
-        private OpenApiDefinitionsModel _inputDefinitions;
+        private Dictionary<string, OpenApiObjectType> _inputDefinitions;
 
         private string _originalName;
         private string _processedName;
@@ -49,11 +49,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
                                                         _objectService.Object);
 
             _inputType = new OpenApiReferencedType();
-            _inputDefinitions = new OpenApiDefinitionsModel()
-            {
-                Definitions = new Dictionary<string, OpenApiObjectType>()
-            };
-            _inputDefinitions.Definitions["NewType"] = _definedNotCreated;
+            _inputDefinitions = new Dictionary<string, OpenApiObjectType>();
+            _inputDefinitions["NewType"] = _definedNotCreated;
             _originalName = "path/ExistingType";
             _processedName = "ExistingType";
             CurrentTypeHolder.Types["ExistingType"] = typeof(ExistingType);
@@ -78,7 +75,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _lastTokenService.Verify();
             _objectKeyStore.Verify(s => s.ThrowIfPresent(It.IsAny<string>()), Times.Never);
             _objectService.Verify(s => s.GetType(It.IsAny<OpenApiObjectType>(),
-                                                It.IsAny<OpenApiDefinitionsModel>(),
+                                                It.IsAny<Dictionary<string, OpenApiObjectType>>(),
                                                 It.IsAny<string>()), Times.Never);
             output.Should().Be(typeof(ExistingType));
         }
