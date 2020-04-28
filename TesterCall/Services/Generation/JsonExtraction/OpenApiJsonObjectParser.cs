@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TesterCall.Models.OpenApi;
 using TesterCall.Models.OpenApi.Interfaces;
@@ -30,13 +31,16 @@ namespace TesterCall.Services.Generation.JsonExtraction
                                                                 prop.Value);
             }
 
-            var allOf = new List<IOpenApiType>();
-            foreach (var extendedType in model.AllOf)
+            if (model.AllOf != null && model.AllOf.Any())
             {
-                allOf.Add(_typeParser.Parse(this,
-                                            extendedType));
+                var allOf = new List<IOpenApiType>();
+                foreach (var extendedType in model.AllOf)
+                {
+                    allOf.Add(_typeParser.Parse(this,
+                                                extendedType));
+                }
+                output.AllOf = allOf;
             }
-            output.AllOf = allOf;
 
             return output;
         }

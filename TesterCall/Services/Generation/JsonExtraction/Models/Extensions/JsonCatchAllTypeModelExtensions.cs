@@ -16,7 +16,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
 
         public static bool IsPrimitive(this JsonCatchAllTypeModel model)
         {
-            if (_primitiveTypes.Contains(model.Type.ToLowerInvariant()))
+            if (!string.IsNullOrEmpty(model.Type)
+                && _primitiveTypes.Contains(model.Type.ToLowerInvariant()))
             {
                 return true;
             }
@@ -36,7 +37,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
 
         public static bool IsArray(this JsonCatchAllTypeModel model)
         {
-            if (model.Type.ToLowerInvariant() == "array"
+            if (!string.IsNullOrEmpty(model.Type)
+                && model.Type.ToLowerInvariant() == "array"
                 && model.Items != null)
             {
                 return true;
@@ -47,8 +49,10 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
 
         public static bool IsObject(this JsonCatchAllTypeModel model)
         {
-            if (model.Type.ToLowerInvariant() == "object"
-                && model.Properties != null && model.Properties.Any())
+            if (!string.IsNullOrEmpty(model.Type)
+                && model.Type.ToLowerInvariant() == "object"
+                && ((model.Properties != null && model.Properties.Any())
+                    || (model.AllOf != null && model.AllOf.Any())))
             {
                 return true;
             }

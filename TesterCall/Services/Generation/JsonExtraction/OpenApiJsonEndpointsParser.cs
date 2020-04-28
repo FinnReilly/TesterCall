@@ -46,7 +46,7 @@ namespace TesterCall.Services.Generation.JsonExtraction
                         ShortName = jsonEndpoint.OperationId
                     };
 
-                    var bodyParameter = jsonEndpoint.Parameters
+                    var bodyParameter = jsonEndpoint.Parameters?
                                                         .FirstOrDefault(p => p.In == JsonParameterIn.body);
                     if (bodyParameter != null)
                     {
@@ -80,21 +80,24 @@ namespace TesterCall.Services.Generation.JsonExtraction
                         }
                     }
 
-                    var parameters = new List<OpenApiParameter>();
-                    foreach (var param in jsonEndpoint.Parameters)
+                    if (jsonEndpoint.Parameters != null && jsonEndpoint.Parameters.Any())
                     {
-                        if (param.In != JsonParameterIn.body)
+                        var parameters = new List<OpenApiParameter>();
+                        foreach (var param in jsonEndpoint.Parameters)
                         {
-
-                            parameters.Add(new OpenApiParameter()
+                            if (param.In != JsonParameterIn.body)
                             {
-                                In = _enumService.ConvertStringTo<ParameterIn>(param.In.ToString().ToLower()),
-                                Schema = _typeParser.Parse(_objectParser,
-                                                            param) as OpenApiPrimitiveType,
-                                Name = param.Name,
-                                Required = param.Required
-                            });
+                                parameters.Add(new OpenApiParameter()
+                                {
+                                    In = _enumService.ConvertStringTo<ParameterIn>(param.In.ToString().ToLower()),
+                                    Schema = _typeParser.Parse(_objectParser,
+                                                                param) as OpenApiPrimitiveType,
+                                    Name = param.Name,
+                                    Required = param.Required
+                                });
+                            }
                         }
+                        returnedEndpoint.Parameters = parameters;
                     }
 
                     endpoints.Add(returnedEndpoint);
