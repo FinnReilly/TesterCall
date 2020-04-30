@@ -53,7 +53,9 @@ namespace TesterCall
 
         protected override void ProcessRecord()
         {
-            _specImportService.Import(Path);
+            var endpoints  = _specImportService.Import(Path);
+
+            WriteObject(endpoints, enumerateCollection: true);
         }
     }
 }

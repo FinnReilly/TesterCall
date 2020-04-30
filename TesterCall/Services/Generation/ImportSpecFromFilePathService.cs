@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TesterCall.Holders;
+using TesterCall.Models.Endpoints;
 using TesterCall.Services.Generation.Interface;
 using TesterCall.Services.Generation.JsonExtraction.Interfaces;
 
@@ -20,7 +22,7 @@ namespace TesterCall.Services.Generation
             _typeGenerationService = openApiSpecModelToGeneratedTypesService;
         }
 
-        public void Import(string filePath)
+        public IEnumerable<Endpoint> Import(string filePath)
         {
             if (!filePath.Contains("."))
             {
@@ -28,21 +30,26 @@ namespace TesterCall.Services.Generation
             }
 
             var fileExtension = filePath.Split('.').Last();
+            var apiId = "";
 
-            if (fileExtension == "yml" || fileExtension == "yaml")
+            switch (fileExtension) 
             {
-                // write some yaml services
+                case "yml":
+                case "yaml":
+                    //put some yaml code here
+                    break;
+                case "json":
+                    var fileStream = File.OpenRead(filePath);
+                    var openApiModel = _jsonParseService.ExtractSpec(fileStream);
+                    apiId = openApiModel.Info.Title;
+
+                    _typeGenerationService.Generate(openApiModel);
+                    break;
+                default:
+                    throw new FormatException("Can only accept .yml/.yaml or .json Open Api/Swagger files");
             }
 
-            if (fileExtension == "json")
-            {
-                var fileStream = File.OpenRead(filePath);
-                var openApiModel = _jsonParseService.ExtractSpec(fileStream);
-
-                _typeGenerationService.Generate(openApiModel);
-            }
-
-            throw new FormatException("Can only accept .yml/.yaml or .json Open Api/Swagger files");
+            return CurrentEndpointHolder.Endpoints.Values.Where(e => e.ApiId == apiId);
         }
     }
 }

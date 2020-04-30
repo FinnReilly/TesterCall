@@ -35,6 +35,7 @@ namespace TesterCall.Services.Generation
             foreach (var endpoint in inputSpec.Endpoints)
             {
                 var converted = _endpointService.GenerateEndpoint(endpoint);
+                converted.ApiId = inputSpec.Info.Title;
                 CurrentEndpointHolder.Endpoints[endpoint.ShortName] = converted;
             }
         }
