@@ -18,25 +18,26 @@ using TesterCall.Services.UtilsAndWrappers.Interfaces;
 
 namespace TesterCall.Services.Generation.JsonExtraction
 {
-    public class JsonFileToOpenApiModelService : ISpecFileToOpenApiModelService
+    public class JsonFileToOpenApiModelService : IJsonFileToOpenApiModelService
     {
         private readonly IOpenApiJsonObjectParser _objectParser;
-        private readonly IOpenApiUmbrellaJsonTypeParser _typeParser;
         private readonly IOpenApiJsonEndpointsParser _endpointsParser;
+        private readonly IOpenApiEndpointShortNameService _shortNameService;
 
         public JsonFileToOpenApiModelService(IOpenApiJsonObjectParser openApiJsonObjectParser,
-                                            IOpenApiUmbrellaJsonTypeParser openApiUmbrellaJsonTypeParser,
-                                            IOpenApiJsonEndpointsParser openApiJsonEndpointsParser)
+                                            IOpenApiJsonEndpointsParser openApiJsonEndpointsParser,
+                                            IOpenApiEndpointShortNameService openApiEndpointShortNameService)
         {
             _objectParser = openApiJsonObjectParser;
-            _typeParser = openApiUmbrellaJsonTypeParser;
             _endpointsParser = openApiJsonEndpointsParser;
+            _shortNameService = openApiEndpointShortNameService;
         }
 
         public OpenApiSpecModel ExtractSpec(FileStream file)
         {
             var output = new OpenApiSpecModel();
             var serializer = new JsonSerializer();
+            serializer.MetadataPropertyHandling = MetadataPropertyHandling.Ignore;
 
             JsonSpecModel jsonModel;
             using (var reader = new StreamReader(file)) {
@@ -54,6 +55,7 @@ namespace TesterCall.Services.Generation.JsonExtraction
             }
 
             output.Endpoints = _endpointsParser.Parse(jsonModel.Paths);
+            _shortNameService.CreateOrUpdateShortNames(output.Endpoints);
 
             return output;
         }

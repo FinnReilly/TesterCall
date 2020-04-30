@@ -11,6 +11,7 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
         {
             "string",
             "integer",
+            "number",
             "boolean"
         };
 

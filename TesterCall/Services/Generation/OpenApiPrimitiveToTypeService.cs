@@ -31,6 +31,11 @@ namespace TesterCall.Services.Generation
                 { "date-time", typeof(DateTime) }
             };
 
+            var numberTypeFormatType = new Dictionary<string, Type>()
+            {
+                { "double", typeof(double) }
+            };
+
             if (primitive.Matches<OpenApiEnumType>())
             {
                 return _enumService.GetType((OpenApiEnumType)primitive,
@@ -52,6 +57,18 @@ namespace TesterCall.Services.Generation
                 }
 
                 return typeof(string);
+            }
+
+            if (primitive.Type == "number")
+            {
+                if (primitive.Format != null
+                    && numberTypeFormatType.TryGetValue(primitive.Format,
+                                                        out var mappedNumberFormatType))
+                {
+                    return mappedNumberFormatType;
+                }
+
+                return typeof(int);
             }
 
             throw new NotSupportedException($"No support available for primitive with type = {primitive.Type}" +

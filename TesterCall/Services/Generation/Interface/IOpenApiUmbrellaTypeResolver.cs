@@ -10,7 +10,7 @@ namespace TesterCall.Services.Generation.Interface
     {
         Type GetType(IOpenApiObjectToTypeService objectService,
                     IOpenApiType openApiType,
-                    Dictionary<string, OpenApiObjectType> definitions,
+                    IDictionary<string, OpenApiObjectType> definitions,
                     // if class, what should name be?
                     string suggestedObjectName = null);
     }

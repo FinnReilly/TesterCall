@@ -45,8 +45,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _objectService = new Mock<IOpenApiObjectToTypeService>();
 
             _service = new OpenApiReferenceToTypeService(_lastTokenService.Object,
-                                                        _objectKeyStore.Object,
-                                                        _objectService.Object);
+                                                        _objectKeyStore.Object);
 
             _inputType = new OpenApiReferencedType();
             _inputDefinitions = new Dictionary<string, OpenApiObjectType>();
@@ -69,7 +68,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
         {
             _inputType.Type = _originalName;
 
-            var output = _service.GetType(_inputType,
+            var output = _service.GetType(_objectService.Object,
+                                            _inputType,
                                             _inputDefinitions);
 
             _lastTokenService.Verify();
@@ -87,7 +87,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _processedName = "NewType";
             _inputType.Type = _originalName;
 
-            var output = _service.GetType(_inputType,
+            var output = _service.GetType(_objectService.Object,
+                                            _inputType,
                                             _inputDefinitions);
 
             _lastTokenService.Verify();
@@ -107,7 +108,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             var expectedError = "Referenced type unrecognisedType is not " +
                 "defined in OpenApi document";
 
-            _service.Invoking(s => s.GetType(_inputType,
+            _service.Invoking(s => s.GetType(_objectService.Object,
+                                            _inputType,
                                             _inputDefinitions))
                     .Should()
                     .Throw<NotSupportedException>()

@@ -50,7 +50,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
 
             _primitiveService.Setup(s => s.GetType(_primitive, It.IsAny<string>()))
                 .Returns(typeof(int));
-            _referenceService.Setup(s => s.GetType(_referenced, _definitions))
+            _referenceService.Setup(s => s.GetType(_objectService.Object, _referenced, _definitions))
                 .Returns(typeof(object));
             _objectService.Setup(s => s.GetType(_object, 
                                                 _definitions, 
@@ -79,7 +79,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
                                             _definitions,
                                             _suggestedName);
 
-            _referenceService.Verify(s => s.GetType(_referenced, _definitions),
+            _referenceService.Verify(s => s.GetType(_objectService.Object, _referenced, _definitions),
                                     Times.Once);
             output.Should().Be(typeof(object));
         }
@@ -138,7 +138,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
                                             _definitions,
                                             _suggestedName);
 
-            _referenceService.Verify(s => s.GetType(_referenced,
+            _referenceService.Verify(s => s.GetType(_objectService.Object,
+                                                    _referenced,
                                                     _definitions));
             output.Should().Be(typeof(IEnumerable<object>));
         }

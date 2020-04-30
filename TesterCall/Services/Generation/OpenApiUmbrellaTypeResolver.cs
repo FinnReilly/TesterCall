@@ -22,10 +22,10 @@ namespace TesterCall.Services.Generation
 
         public Type GetType(IOpenApiObjectToTypeService objectService, 
                             IOpenApiType openApiType,
-                            Dictionary<string, OpenApiObjectType> definitions,
+                            IDictionary<string, OpenApiObjectType> definitions,
                             string suggestedObjectName = null)
         {
-            if (openApiType.Matches<OpenApiPrimitiveType>())
+            if (openApiType is OpenApiPrimitiveType)
             {
                 return _primitiveService.GetType((OpenApiPrimitiveType)openApiType,
                                                 nameIfEnum:suggestedObjectName);
@@ -33,7 +33,8 @@ namespace TesterCall.Services.Generation
 
             if (openApiType.Matches<OpenApiReferencedType>())
             {
-                return _referenceService.GetType((OpenApiReferencedType)openApiType,
+                return _referenceService.GetType(objectService,
+                                                (OpenApiReferencedType)openApiType,
                                                 definitions);
             }
 

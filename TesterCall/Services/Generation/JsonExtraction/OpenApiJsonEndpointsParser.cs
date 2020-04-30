@@ -58,7 +58,7 @@ namespace TesterCall.Services.Generation.JsonExtraction
                                         GetContentType(jsonEndpoint.Consumes) :
                                         "application/json",
                                 Content = _typeParser.Parse(_objectParser,
-                                                            bodyParameter)
+                                                            bodyParameter.Schema)
                             };
                         }
                     }
@@ -74,8 +74,10 @@ namespace TesterCall.Services.Generation.JsonExtraction
                             returnedEndpoint.SuccessStatusResponse = new OpenApiRequestOrResponseModel()
                             {
                                 Type = GetContentType(jsonEndpoint.Produces),
-                                Content = _typeParser.Parse(_objectParser,
-                                                            successStatusResponse.Value.Schema)
+                                Content = successStatusResponse.Value.Schema != null ?
+                                                _typeParser.Parse(_objectParser,
+                                                                    successStatusResponse.Value.Schema) :
+                                                null
                             };
                         }
                     }
