@@ -42,9 +42,7 @@ namespace TesterCall
         protected override void ProcessRecord()
         {
             var createdType = _objectCreator.Create(Endpoint.RequestBody.Type, 
-                                                    ReplaceProperties?.Cast<DictionaryEntry>()
-                                                                    .ToDictionary(pair => (string)pair.Key,
-                                                                                    pair => pair.Value));
+                                                    ReplaceProperties);
 
             if (Convert.ToBoolean(AsJson))
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,16 @@ namespace TesterCall.Services.Usage
 {
     public class ObjectCreator : IObjectCreator
     {
-        public object Create(Type type, IDictionary<string, object> replaceFields = null)
+        public object Create(Type type, Hashtable replaceFields = null)
         {
             var createdInstance = Activator.CreateInstance(type);
             var fields = createdInstance.GetType().GetFields();
 
             foreach (var field in fields)
             {
-                if (field.FieldType.IsClass)
+                if (field.FieldType.IsClass && 
+                    !field.FieldType.IsPrimitive &&
+                    field.FieldType != typeof(string))
                 {
                     field.SetValue(createdInstance, Create(field.FieldType));
                 }
@@ -36,13 +39,14 @@ namespace TesterCall.Services.Usage
 
             if (replaceFields != null)
             {
-
-                foreach (var replacement in replaceFields)
+                var replacementsDict = replaceFields.Cast<DictionaryEntry>()
+                                                    .ToDictionary(kvp => (string)kvp.Key,
+                                                                    kvp => kvp.Value);
+                foreach (var replacement in replacementsDict)
                 {
                     var isNestedReplacement = replacement.Value != null
                                                 && replacement.Value
-                                                                .GetType()
-                                                                .IsAssignableFrom(typeof(IDictionary<,>));
+                                                                .GetType() == typeof(Hashtable);
                     var fieldToReplace = fields.FirstOrDefault(p => p.Name == replacement.Key);
 
                     if (fieldToReplace == null)
@@ -73,7 +77,7 @@ namespace TesterCall.Services.Usage
                         }
 
                         var objectValue = Create(fieldToReplace.FieldType,
-                                                (IDictionary<string, object>)replacement.Value);
+                                                (Hashtable)replacement.Value);
                         fieldToReplace.SetValue(createdInstance, objectValue);
                     }
                 }
