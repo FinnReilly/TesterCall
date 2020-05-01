@@ -9,6 +9,7 @@ namespace TesterCall.Services.Generation.Interface
     public interface IOpenApiUmbrellaTypeResolver
     {
         Type GetType(IOpenApiObjectToTypeService objectService,
+                    IObjectsProcessingKeyStore objectsProcessingKeyStore,
                     IOpenApiType openApiType,
                     IDictionary<string, OpenApiObjectType> definitions,
                     // if class, what should name be?

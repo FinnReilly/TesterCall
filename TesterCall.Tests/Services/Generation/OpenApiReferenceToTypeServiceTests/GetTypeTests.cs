@@ -44,10 +44,10 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _objectKeyStore = new Mock<IObjectsProcessingKeyStore>();
             _objectService = new Mock<IOpenApiObjectToTypeService>();
 
-            _service = new OpenApiReferenceToTypeService(_lastTokenService.Object,
-                                                        _objectKeyStore.Object);
+            _service = new OpenApiReferenceToTypeService(_lastTokenService.Object);
 
             _inputType = new OpenApiReferencedType();
+            _definedNotCreated = new OpenApiObjectType();
             _inputDefinitions = new Dictionary<string, OpenApiObjectType>();
             _inputDefinitions["NewType"] = _definedNotCreated;
             _originalName = "path/ExistingType";
@@ -58,7 +58,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
                 .Returns(() => _processedName).Verifiable();
             _objectService.Setup(s => s.GetType(_definedNotCreated,
                                                 _inputDefinitions,
-                                                "NewType"))
+                                                "NewType",
+                                                _objectKeyStore.Object))
                             .Returns(typeof(NewType))
                             .Verifiable();
         }
@@ -69,6 +70,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _inputType.Type = _originalName;
 
             var output = _service.GetType(_objectService.Object,
+                                            _objectKeyStore.Object,
                                             _inputType,
                                             _inputDefinitions);
 
@@ -76,7 +78,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _objectKeyStore.Verify(s => s.ThrowIfPresent(It.IsAny<string>()), Times.Never);
             _objectService.Verify(s => s.GetType(It.IsAny<OpenApiObjectType>(),
                                                 It.IsAny<Dictionary<string, OpenApiObjectType>>(),
-                                                It.IsAny<string>()), Times.Never);
+                                                It.IsAny<string>(),
+                                                _objectKeyStore.Object), Times.Never);
             output.Should().Be(typeof(ExistingType));
         }
 
@@ -88,6 +91,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _inputType.Type = _originalName;
 
             var output = _service.GetType(_objectService.Object,
+                                            _objectKeyStore.Object,
                                             _inputType,
                                             _inputDefinitions);
 
@@ -95,7 +99,8 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
             _objectKeyStore.Verify(s => s.ThrowIfPresent(_processedName), Times.Once);
             _objectService.Verify(s => s.GetType(_definedNotCreated,
                                                 _inputDefinitions,
-                                                _processedName), Times.Once);
+                                                _processedName,
+                                                _objectKeyStore.Object), Times.Once);
             output.Should().Be(typeof(NewType));
             CurrentTypeHolder.Types.TryGetValue(_processedName, out var fromStorage);
             fromStorage.Should().Be(typeof(NewType));
@@ -109,6 +114,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiReferenceToTypeServiceTest
                 "defined in OpenApi document";
 
             _service.Invoking(s => s.GetType(_objectService.Object,
+                                            _objectKeyStore.Object,
                                             _inputType,
                                             _inputDefinitions))
                     .Should()

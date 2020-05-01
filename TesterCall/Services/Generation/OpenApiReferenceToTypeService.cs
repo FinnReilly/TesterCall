@@ -12,16 +12,14 @@ namespace TesterCall.Services.Generation
     public class OpenApiReferenceToTypeService : IOpenApiReferenceToTypeService
     {
         private readonly ILastTokenInPathService _lastTokenService;
-        private readonly IObjectsProcessingKeyStore _objectKeyStore;
 
-        public OpenApiReferenceToTypeService(ILastTokenInPathService lastTokenInPathService,
-                                            IObjectsProcessingKeyStore objectsProcessingKeyStore)
+        public OpenApiReferenceToTypeService(ILastTokenInPathService lastTokenInPathService)
         {
             _lastTokenService = lastTokenInPathService;
-            _objectKeyStore = objectsProcessingKeyStore;
         }
 
         public Type GetType(IOpenApiObjectToTypeService objectService,
+                            IObjectsProcessingKeyStore objectKeyStore,
                             OpenApiReferencedType referencedType, 
                             IDictionary<string, OpenApiObjectType> definitions)
         {
@@ -35,11 +33,12 @@ namespace TesterCall.Services.Generation
                 }
 
                 //handle circular reference
-                _objectKeyStore.ThrowIfPresent(typeName);
+                objectKeyStore.ThrowIfPresent(typeName);
 
                 var createdType = objectService.GetType(definedNotCreated,
                                                         definitions,
-                                                        typeName);
+                                                        typeName,
+                                                        objectKeyStore);
 
                 CurrentTypeHolder.Types[typeName] = createdType;
 

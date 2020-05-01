@@ -25,7 +25,8 @@ namespace TesterCall.Services.Generation
             _objectToTypeService = openApiObjectToTypeService;
         }
 
-        public Endpoint GenerateEndpoint(OpenApiEndpointModel inputModel)
+        public Endpoint GenerateEndpoint(OpenApiEndpointModel inputModel,
+                                        IObjectsProcessingKeyStore keyStore)
         {
             var output = new Endpoint()
             {
@@ -41,11 +42,13 @@ namespace TesterCall.Services.Generation
                 RequestBody = inputModel.RequestBody == null ?
                                             null :
                                             ConvertContent(inputModel.RequestBody,
-                                                            $"{inputModel.ShortName}Request"),
+                                                            $"{inputModel.ShortName}Request",
+                                                            keyStore),
                 SuccessResponseBody = inputModel.SuccessStatusResponse == null ?
                                                     null :
                                                     ConvertContent(inputModel.SuccessStatusResponse,
-                                                                    $"{inputModel.ShortName}Result")
+                                                                    $"{inputModel.ShortName}Result",
+                                                                    keyStore)
             };
 
             output.SuccessContentExpected = output.SuccessResponseBody != null;
@@ -65,7 +68,8 @@ namespace TesterCall.Services.Generation
         }
 
         private Content ConvertContent(OpenApiRequestOrResponseModel input,
-                                        string name)
+                                        string name,
+                                        IObjectsProcessingKeyStore keyStore)
         {
             return new Content()
             {
@@ -73,6 +77,7 @@ namespace TesterCall.Services.Generation
                 Type = input.Content == null ?
                             null :
                             _typeResolver.GetType(_objectToTypeService,
+                                                    keyStore,
                                                     input.Content,
                                                     null,
                                                     name)

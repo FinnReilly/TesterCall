@@ -30,14 +30,11 @@ namespace TesterCall
             var lastTokenService = new LastTokenInPathService();
 
             var moduleBuilderProvider = new ModuleBuilderProvider();
-            var objectsProcessingKeyStore = new ObjectsProcessingKeyStore();
             var openApiPrimitiveService = new OpenApiPrimitiveToTypeService(new OpenApiEnumToTypeService(moduleBuilderProvider));
             var openApiTypeResolver = new OpenApiUmbrellaTypeResolver(openApiPrimitiveService,
-                                                                        new OpenApiReferenceToTypeService(lastTokenService,
-                                                                                                            objectsProcessingKeyStore));
+                                                                        new OpenApiReferenceToTypeService(lastTokenService));
             var openApiObjectToTypeService = new OpenApiObjectToTypeService(openApiTypeResolver,
                                                                             new StealFieldsFromOpenApiObjectTypeService(openApiTypeResolver),
-                                                                            objectsProcessingKeyStore,
                                                                             moduleBuilderProvider);
 
             _specImportService = new ImportSpecFromFilePathService(new JsonFileToOpenApiModelService(jsonObjectParser,

@@ -21,6 +21,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
         private Mock<IOpenApiPrimitiveToTypeService> _primitiveService;
         private Mock<IOpenApiReferenceToTypeService> _referenceService;
         private Mock<IOpenApiObjectToTypeService> _objectService;
+        private Mock<IObjectsProcessingKeyStore> _keyStore;
 
         private OpenApiUmbrellaTypeResolver _service;
 
@@ -37,6 +38,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
             _primitiveService = new Mock<IOpenApiPrimitiveToTypeService>();
             _referenceService = new Mock<IOpenApiReferenceToTypeService>();
             _objectService = new Mock<IOpenApiObjectToTypeService>();
+            _keyStore = new Mock<IObjectsProcessingKeyStore>();
 
             _service = new OpenApiUmbrellaTypeResolver(_primitiveService.Object,
                                                         _referenceService.Object);
@@ -50,11 +52,15 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
 
             _primitiveService.Setup(s => s.GetType(_primitive, It.IsAny<string>()))
                 .Returns(typeof(int));
-            _referenceService.Setup(s => s.GetType(_objectService.Object, _referenced, _definitions))
+            _referenceService.Setup(s => s.GetType(_objectService.Object,
+                                                    _keyStore.Object,
+                                                    _referenced, 
+                                                    _definitions))
                 .Returns(typeof(object));
             _objectService.Setup(s => s.GetType(_object, 
                                                 _definitions, 
-                                                It.IsAny<string>()))
+                                                It.IsAny<string>(),
+                                                _keyStore.Object))
                 .Returns(typeof(object));
         }
 
@@ -62,6 +68,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
         public void BehavesCorrectlyForPrimitive()
         {
             var output = _service.GetType(_objectService.Object,
+                                            _keyStore.Object,
                                             _primitive,
                                             _definitions,
                                             _suggestedName);
@@ -75,11 +82,15 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
         public void BehavesCorrectlyForReferenced()
         {
             var output = _service.GetType(_objectService.Object,
+                                            _keyStore.Object,
                                             _referenced,
                                             _definitions,
                                             _suggestedName);
 
-            _referenceService.Verify(s => s.GetType(_objectService.Object, _referenced, _definitions),
+            _referenceService.Verify(s => s.GetType(_objectService.Object, 
+                                                _keyStore.Object,
+                                                _referenced, 
+                                                _definitions),
                                     Times.Once);
             output.Should().Be(typeof(object));
         }
@@ -88,13 +99,15 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
         public void BehavesCorrectlyForObject()
         {
             var output = _service.GetType(_objectService.Object,
+                                            _keyStore.Object,
                                             _object,
                                             _definitions,
                                             _suggestedName);
 
             _objectService.Verify(s => s.GetType(_object,
                                                 _definitions,
-                                                _suggestedName), Times.Once);
+                                                _suggestedName,
+                                                _keyStore.Object), Times.Once);
             output.Should().Be(typeof(object));
         }
 
@@ -104,13 +117,15 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
             _array.Items = _object;
             var expectedSuggestedName = $"{_suggestedName}Member";
             var output = _service.GetType(_objectService.Object,
+                                            _keyStore.Object,
                                             _array,
                                             _definitions,
                                             _suggestedName);
 
             _objectService.Verify(s => s.GetType(_object,
                                                 _definitions,
-                                                expectedSuggestedName), Times.Once);
+                                                expectedSuggestedName,
+                                                _keyStore.Object), Times.Once);
             output.Should().Be(typeof(IEnumerable<object>));
         }
 
@@ -120,6 +135,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
             _array.Items = _primitive;
             var expectedSuggestedName = $"{_suggestedName}Member";
             var output = _service.GetType(_objectService.Object,
+                                            _keyStore.Object,
                                             _array,
                                             _definitions,
                                             _suggestedName);
@@ -134,11 +150,13 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
         {
             _array.Items = _referenced;
             var output = _service.GetType(_objectService.Object,
+                                            _keyStore.Object,
                                             _array,
                                             _definitions,
                                             _suggestedName);
 
             _referenceService.Verify(s => s.GetType(_objectService.Object,
+                                                    _keyStore.Object,
                                                     _referenced,
                                                     _definitions));
             output.Should().Be(typeof(IEnumerable<object>));
@@ -154,13 +172,15 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
             var expectedSuggestedName = $"{_suggestedName}MemberMember";
 
             var output = _service.GetType(_objectService.Object,
+                                            _keyStore.Object,
                                             _array,
                                             _definitions,
                                             _suggestedName);
 
             _objectService.Verify(s => s.GetType(_object,
                                                 _definitions,
-                                                expectedSuggestedName), Times.Once);
+                                                expectedSuggestedName,
+                                                _keyStore.Object), Times.Once);
             output.Should().Be(typeof(IEnumerable<IEnumerable<object>>));
         }
     }

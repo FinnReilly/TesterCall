@@ -9,6 +9,7 @@ namespace TesterCall.Services.Generation.Interface
     {
         Type GetType(OpenApiObjectType inputObject, 
                     IDictionary<string, OpenApiObjectType> definitions,
-                    string name);
+                    string name,
+                    IObjectsProcessingKeyStore objectsProcessingKeyStore);
     }
 }

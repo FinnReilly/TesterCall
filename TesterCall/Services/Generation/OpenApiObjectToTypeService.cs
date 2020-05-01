@@ -14,34 +14,33 @@ namespace TesterCall.Services.Generation
     {
         private readonly IOpenApiUmbrellaTypeResolver _typeResolver;
         private readonly IStealFieldsFromOpenApiObjectTypesService _fieldStealer;
-        private readonly IObjectsProcessingKeyStore _objectsKeyStore;
         private readonly IModuleBuilderProvider _module;
 
         public OpenApiObjectToTypeService(IOpenApiUmbrellaTypeResolver openApiUmbrellaTypeResolver,
                                             IStealFieldsFromOpenApiObjectTypesService stealFieldsFromOpenApiObjectTypesService,
-                                            IObjectsProcessingKeyStore objectsProcessingStore,
                                             IModuleBuilderProvider moduleBuilderProvider)
         {
             _typeResolver = openApiUmbrellaTypeResolver;
             _fieldStealer = stealFieldsFromOpenApiObjectTypesService;
-            _objectsKeyStore = objectsProcessingStore;
             _module = moduleBuilderProvider;
         }
 
         public Type GetType(OpenApiObjectType inputObject, 
                             IDictionary<string, OpenApiObjectType> definitions,
-                            string name)
+                            string name,
+                            IObjectsProcessingKeyStore objectsKeyStore)
         {
-            _objectsKeyStore.ThrowIfPresent(name);
+            objectsKeyStore.ThrowIfPresent(name);
 
             var typeBuilder = _module.Builder.DefineType(name,
                                                         TypeAttributes.Public);
-            _objectsKeyStore.AddPresent(name);
+            objectsKeyStore.AddPresent(name);
 
             foreach (var property in inputObject.Properties)
             {
                 var propName = property.Key;
                 var propType = _typeResolver.GetType(this,
+                                                    objectsKeyStore,
                                                     property.Value,
                                                     definitions,
                                                     $"{name}_{propName}");
@@ -54,12 +53,13 @@ namespace TesterCall.Services.Generation
             if (inputObject.AllOf != null && inputObject.AllOf.Any())
             {
                 _fieldStealer.AddFields(this,
+                                        objectsKeyStore,
                                         typeBuilder, 
                                         inputObject.AllOf,
                                         definitions);
             }
 
-            _objectsKeyStore.RemovePresent(name);
+            objectsKeyStore.RemovePresent(name);
 
             return typeBuilder.CreateTypeInfo();
         }

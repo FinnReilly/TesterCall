@@ -10,6 +10,7 @@ namespace TesterCall.Services.Generation.Interface
     public interface IStealFieldsFromOpenApiObjectTypesService
     {
         void AddFields(IOpenApiObjectToTypeService openApiObjectToTypeService,
+                        IObjectsProcessingKeyStore keyStore,
                         TypeBuilder typeBuilder,
                         IEnumerable<IOpenApiType> extendedTypes,
                         IDictionary<string, OpenApiObjectType> definitions);

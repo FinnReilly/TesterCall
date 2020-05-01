@@ -20,7 +20,8 @@ namespace TesterCall.Services.Generation
             _referenceService = openApiReferenceToTypeService;
         }
 
-        public Type GetType(IOpenApiObjectToTypeService objectService, 
+        public Type GetType(IOpenApiObjectToTypeService objectService,
+                            IObjectsProcessingKeyStore objectKeyStore,
                             IOpenApiType openApiType,
                             IDictionary<string, OpenApiObjectType> definitions,
                             string suggestedObjectName = null)
@@ -34,6 +35,7 @@ namespace TesterCall.Services.Generation
             if (openApiType.Matches<OpenApiReferencedType>())
             {
                 return _referenceService.GetType(objectService,
+                                                objectKeyStore,
                                                 (OpenApiReferencedType)openApiType,
                                                 definitions);
             }
@@ -42,13 +44,15 @@ namespace TesterCall.Services.Generation
             {
                 return objectService.GetType((OpenApiObjectType)openApiType,
                                             definitions,
-                                            suggestedObjectName);
+                                            suggestedObjectName,
+                                            objectKeyStore);
             }
 
             if (openApiType.Matches<OpenApiArrayType>())
             {
                 var memberType = ((OpenApiArrayType)openApiType).Items;
                 var arrayMemberType = GetType(objectService,
+                                            objectKeyStore,
                                             memberType,
                                             definitions,
                                             suggestedObjectName + "Member");

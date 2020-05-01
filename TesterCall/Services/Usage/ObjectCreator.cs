@@ -14,6 +14,7 @@ namespace TesterCall.Services.Usage
             var createdInstance = Activator.CreateInstance(type);
             var fields = createdInstance.GetType().GetFields();
 
+            //nb could make better use of dictionary here
             foreach (var field in fields)
             {
                 if (field.FieldType.IsClass && 

@@ -8,6 +8,7 @@ namespace TesterCall.Services.Generation.Interface
 {
     public interface IOpenApiEndpointToEndpointService
     {
-        Endpoint GenerateEndpoint(OpenApiEndpointModel inputModel);
+        Endpoint GenerateEndpoint(OpenApiEndpointModel inputModel,
+                                    IObjectsProcessingKeyStore keyStore);
     }
 }

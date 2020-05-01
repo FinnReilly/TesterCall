@@ -19,6 +19,7 @@ namespace TesterCall.Services.Generation
         }
 
         public void AddFields(IOpenApiObjectToTypeService openApiObjectToTypeService,
+                                IObjectsProcessingKeyStore keyStore,
                                 TypeBuilder typeBuilder, 
                                 IEnumerable<IOpenApiType> extendedTypes,
                                 IDictionary<string, OpenApiObjectType> definitions)
@@ -27,6 +28,7 @@ namespace TesterCall.Services.Generation
             {
                 Type donorType = typeof(object);
                 donorType = _typeResolver.GetType(openApiObjectToTypeService,
+                                                    keyStore,
                                                     openApiType,
                                                     definitions,
                                                     $"PropertyHolder_{Guid.NewGuid()}");

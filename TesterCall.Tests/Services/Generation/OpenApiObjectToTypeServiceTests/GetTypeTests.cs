@@ -40,7 +40,6 @@ namespace TesterCall.Tests.Services.Generation.OpenApiObjectToTypeServiceTests
 
             _service = new OpenApiObjectToTypeService(_typeResolver.Object,
                                                         _fieldStealer.Object,
-                                                        _objectsKeyStore.Object,
                                                         _moduleBuilderProvider);
 
             _prop1 = new OpenApiPrimitiveType();
@@ -57,6 +56,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiObjectToTypeServiceTests
             _name = Guid.NewGuid().ToString();
 
             _typeResolver.Setup(s => s.GetType(_service,
+                                                _objectsKeyStore.Object,
                                                 It.IsAny<OpenApiPrimitiveType>(),
                                                 _inputDefinitions,
                                                 It.IsAny<string>()))
@@ -68,19 +68,23 @@ namespace TesterCall.Tests.Services.Generation.OpenApiObjectToTypeServiceTests
         {
             var output = _service.GetType(_inputType,
                                             _inputDefinitions,
-                                            _name);
+                                            _name,
+                                            _objectsKeyStore.Object);
 
             _objectsKeyStore.Verify(s => s.ThrowIfPresent(_name), Times.Once);
             _objectsKeyStore.Verify(s => s.AddPresent(_name), Times.Once);
             _typeResolver.Verify(s => s.GetType(_service,
+                                                _objectsKeyStore.Object,
                                                 _prop1,
                                                 _inputDefinitions,
                                                 $"{_name}_FirstProperty"), Times.Once);
             _typeResolver.Verify(s => s.GetType(_service,
+                                                _objectsKeyStore.Object,
                                                 _prop2,
                                                 _inputDefinitions,
                                                 $"{_name}_SecondProperty"), Times.Once);
             _fieldStealer.Verify(s => s.AddFields(_service,
+                                                    _objectsKeyStore.Object,
                                                     It.IsAny<TypeBuilder>(),
                                                     It.IsAny<IEnumerable<IOpenApiType>>(),
                                                     _inputDefinitions), Times.Never);
@@ -103,9 +107,11 @@ namespace TesterCall.Tests.Services.Generation.OpenApiObjectToTypeServiceTests
 
             _service.GetType(_inputType,
                             _inputDefinitions,
-                            _name);
+                            _name,
+                            _objectsKeyStore.Object);
 
             _fieldStealer.Verify(s => s.AddFields(_service,
+                                                    _objectsKeyStore.Object,
                                                     It.IsAny<TypeBuilder>(),
                                                     allOf,
                                                     _inputDefinitions), Times.Once);
