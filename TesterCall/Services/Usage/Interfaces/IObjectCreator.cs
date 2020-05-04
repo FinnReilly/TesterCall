@@ -7,6 +7,6 @@ namespace TesterCall.Services.Usage.Interfaces
 {
     public interface IObjectCreator
     {
-        object Create(Type type, Hashtable replaceFields = null);
+        object Create(Type type, Hashtable replaceFields = null, bool asExample = false);
     }
 }

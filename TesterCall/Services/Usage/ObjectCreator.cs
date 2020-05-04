@@ -2,89 +2,201 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using TesterCall.Services.Usage.Interfaces;
+using TesterCall.Services.UtilsAndWrappers.Interfaces;
 
 namespace TesterCall.Services.Usage
 {
     public class ObjectCreator : IObjectCreator
     {
-        public object Create(Type type, Hashtable replaceFields = null)
+        private readonly IEnumFromStringService _enumService;
+
+        public ObjectCreator(IEnumFromStringService enumFromStringService)
+        {
+            _enumService = enumFromStringService;
+        }
+
+        public object Create(Type type, 
+                            Hashtable replaceFields = null,
+                            bool isExample = false)
         {
             var createdInstance = Activator.CreateInstance(type);
             var fields = createdInstance.GetType().GetFields();
+            var replacementsDict = replaceFields?.Cast<DictionaryEntry>()
+                                                .ToDictionary(kvp => (string)kvp.Key,
+                                                                kvp => kvp.Value);
+            
 
             //nb could make better use of dictionary here
             foreach (var field in fields)
             {
-                if (field.FieldType.IsClass && 
-                    !field.FieldType.IsPrimitive &&
+                object replacementValue = null;
+                var shouldReplaceValue = false;
+                if (replacementsDict != null)
+                {
+                    if(replacementsDict.TryGetValue(field.Name, out replacementValue))
+                    {
+                        shouldReplaceValue = true;
+                    }
+                }
+                var shouldCreateValue = isExample || shouldReplaceValue; 
+
+                if (shouldCreateValue &&
+                    field.FieldType.IsClass && 
                     field.FieldType != typeof(string))
                 {
-                    field.SetValue(createdInstance, Create(field.FieldType));
+                    field.SetValue(createdInstance, 
+                                    Create(field.FieldType,
+                                            (Hashtable)replacementValue,
+                                            isExample));
                 }
 
-                if (field.FieldType.IsArray)
+                //IEnumerables
+                if (shouldCreateValue
+                    && IsEnumerable(field.FieldType))
                 {
-                    var elementType = field.FieldType.GetElementType();
-                    var array = Array.CreateInstance(elementType, 1);
-                    if (field.FieldType.GetElementType().IsClass)
+                    var elementType = EnumerableMemberType(field.FieldType);
+                    var elementIsClass = elementType.IsClass && elementType != typeof(string);
+                    var enumerableType = typeof(List<>).MakeGenericType(elementType);
+                    var createdEnumerable = Activator.CreateInstance(enumerableType);
+                    var addMethod = enumerableType.GetMethod("Add", 
+                                                            BindingFlags.Public | BindingFlags.Instance);
+
+                    if (!shouldReplaceValue)
                     {
-                        var singleMember = Create(elementType);
-                        array.SetValue(singleMember, 0);
-                    }
+                        var underlyingType = Nullable.GetUnderlyingType(elementType);
 
-                    field.SetValue(createdInstance, array);
-                }
-            }
+                        var singleMember = elementIsClass ? 
+                                                Create(elementType,
+                                                        null,
+                                                        isExample) : 
+                                                underlyingType == null ? 
+                                                    Activator.CreateInstance(elementType) :
+                                                    Activator.CreateInstance(underlyingType);
 
-            if (replaceFields != null)
-            {
-                var replacementsDict = replaceFields.Cast<DictionaryEntry>()
-                                                    .ToDictionary(kvp => (string)kvp.Key,
-                                                                    kvp => kvp.Value);
-                foreach (var replacement in replacementsDict)
-                {
-                    var isNestedReplacement = replacement.Value != null
-                                                && replacement.Value
-                                                                .GetType() == typeof(Hashtable);
-                    var fieldToReplace = fields.FirstOrDefault(p => p.Name == replacement.Key);
-
-                    if (fieldToReplace == null)
-                    {
-                        throw new ArgumentException($"Type {type.Name} does not have a property named " +
-                            $"{replacement.Key}");
-                    }
-
-                    if (!isNestedReplacement)
-                    {
-                        if (replacement.Value != null &&
-                            fieldToReplace.FieldType != replacement.Value.GetType())
-                        {
-                            throw new ArgumentException($"Property {fieldToReplace.Name} of object type " +
-                                $"{type.Name} should be of type {fieldToReplace.FieldType} but type " +
-                                $"provided was {replacement.Value.GetType()}");
-                        }
-
-                        fieldToReplace.SetValue(createdInstance, replacement.Value);
+                        addMethod.Invoke(createdEnumerable,
+                                        new object[] { singleMember });
                     }
                     else
                     {
-                        if (!fieldToReplace.FieldType.IsClass)
+                        if (!replacementValue.GetType().IsArray)
                         {
-                            throw new ArgumentException($"Property {fieldToReplace.Name} of " +
-                                $"object type {type.Name} is not a nested class - " +
-                                $"a dictionary cannot be used to set its value");
+                            throw new ArgumentException("Replacement values for an array must be an array");
                         }
 
-                        var objectValue = Create(fieldToReplace.FieldType,
-                                                (Hashtable)replacement.Value);
-                        fieldToReplace.SetValue(createdInstance, objectValue);
+                        if (elementIsClass)
+                        {
+                            if (replacementValue.GetType() != typeof(Hashtable[]))
+                            {
+                                throw new ArgumentException("Replacement values in an array of objects should " +
+                                    "be submitted as an array of Hashtables");
+                            }
+
+                            foreach (var hashTable in (Hashtable[])replacementValue)
+                            {
+                                var memberToAdd = Create(elementType,
+                                                        hashTable,
+                                                        isExample);
+                                addMethod.Invoke(createdEnumerable,
+                                                new object[] { memberToAdd });
+                            }
+                        }
+                        else
+                        {
+                            //handle replacement value types/strings
+                            foreach (var value in (Array)replacementValue)
+                            {
+                                addMethod.Invoke(createdEnumerable,
+                                                new object[] { value });
+                            }
+                        }
                     }
+
+                    field.SetValue(createdInstance, createdEnumerable);
+                }
+
+                //value types
+                if (field.FieldType.IsValueType && shouldCreateValue)
+                {
+                    var underlyingType = Nullable.GetUnderlyingType(field.FieldType);
+
+                    if (underlyingType != null 
+                        && !shouldReplaceValue
+                        && isExample)
+                    {
+                        // create value for nullable types in example mode when there is no replacement
+                        field.SetValue(createdInstance, Activator.CreateInstance(underlyingType));
+                    }
+                    else
+                    {
+                        if (shouldReplaceValue)
+                        {
+                            if (field.FieldType.IsEnum || 
+                                (underlyingType != null && underlyingType.IsEnum))
+                            {
+                                var enumType = underlyingType != null ? underlyingType : field.FieldType;
+                                replacementValue = ReturnEnum(replacementValue, enumType);
+                            }
+
+                            if (field.FieldType == typeof(DateTime) ||
+                                (underlyingType != null && underlyingType == typeof(DateTime)))
+                            {
+                                replacementValue = ReturnDateTime(replacementValue);
+                            }
+
+                            field.SetValue(createdInstance, replacementValue);
+                        }
+                    }
+                }
+
+                //strings
+                if (field.FieldType == typeof(string) && replacementValue != null)
+                {
+                    field.SetValue(createdInstance, replacementValue);
                 }
             }
 
             return createdInstance;
+        }
+
+        private bool IsEnumerable(Type typeToCheck)
+        {
+            var interfaces = typeToCheck.GetInterfaces();
+            return typeToCheck.IsGenericType
+                    && typeToCheck.GetGenericTypeDefinition() == typeof(IEnumerable<>)
+                    && typeToCheck.GenericTypeArguments.Length == 1;
+        }
+
+        private Type EnumerableMemberType(Type enumerableType)
+        {
+            return enumerableType.GenericTypeArguments.FirstOrDefault();
+        }
+
+        private object ReturnEnum(object suggestedReplacement, Type enumType)
+        {
+            if (suggestedReplacement.GetType() == typeof(string))
+            {
+                var makeEnumMethod = _enumService.GetType()
+                                                .GetMethod("ConvertStringTo")
+                                                .MakeGenericMethod(new Type[] { enumType });
+
+                return makeEnumMethod.Invoke(_enumService,
+                                            new object[] { suggestedReplacement });
+            }
+
+            return suggestedReplacement;
+        }
+
+        private object ReturnDateTime(object suggestedReplacement)
+        {
+            if (suggestedReplacement.GetType() == typeof(string))
+            {
+                return DateTime.Parse((string)suggestedReplacement);
+            }
+
+            return suggestedReplacement;
         }
     }
 }
