@@ -6,3 +6,4 @@ C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\Teste
 C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.pdb
 C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.csprojAssemblyReference.cache
+C:\Users\Finn\repos_general\TesterCall\TesterCall\obj\Debug\netstandard2.0\TesterCall.csproj.CoreCompileInputs.cache

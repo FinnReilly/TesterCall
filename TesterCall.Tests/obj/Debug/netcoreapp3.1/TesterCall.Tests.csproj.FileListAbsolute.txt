@@ -99,3 +99,5 @@ C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.csproj.CopyComplete
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.pdb
+C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.csproj.CoreCompileInputs.cache
+C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.genruntimeconfig.cache

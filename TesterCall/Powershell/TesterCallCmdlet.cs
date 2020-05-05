@@ -39,17 +39,5 @@ namespace TesterCall.Powershell
 
             return awaitableTask.Result;
         }
-
-        protected virtual T UniqueSingleton<T>(T service)
-        {
-            if (!GlobalServiceHolder.Services.TryGetValue(typeof(T), 
-                                                            out var existing))
-            {
-                GlobalServiceHolder.Services[typeof(T)] = service;
-                return service;
-            }
-
-            return (T)existing;
-        }
     }
 }
