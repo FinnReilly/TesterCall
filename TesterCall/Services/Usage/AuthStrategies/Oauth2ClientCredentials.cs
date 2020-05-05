@@ -15,6 +15,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
     {
         private readonly IDateTimeWrapper _dateService;
         private readonly IPostUrlFormEncodedService _postUrlEncodedService;
+        private readonly IResponseRecorderService _responseRecorder;
 
         private string _tokenUri;
         private string _clientId;
@@ -25,6 +26,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
 
         public Oauth2ClientCredentials(IDateTimeWrapper dateTimeWrapper,
                                         IPostUrlFormEncodedService postUrlFormEncodedService,
+                                        IResponseRecorderService responseRecorderService,
                                         string tokenUri,
                                         string clientId,
                                         string clientSecret)
@@ -59,6 +61,9 @@ namespace TesterCall.Services.Usage.AuthStrategies
                 _lastResponseTime = response.responseTime;
 
                 _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
+
+                //add to stats if configured
+                _responseRecorder.RecordIfRequired(this);
             }
 
             return $"{_lastResponse.TokenType} {_lastResponse.AccessToken}";

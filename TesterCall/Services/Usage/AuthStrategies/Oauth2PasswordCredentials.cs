@@ -15,6 +15,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
     {
         private readonly IDateTimeWrapper _dateService;
         private readonly IPostUrlFormEncodedService _postUrlEncodedService;
+        private readonly IResponseRecorderService _responseRecorder;
 
         private string _tokenUri;
         private string _clientId;
@@ -27,6 +28,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
 
         public Oauth2PasswordCredentials(IDateTimeWrapper dateTimeWrapper,
                                         IPostUrlFormEncodedService postUrlFormEncodedService,
+                                        IResponseRecorderService responseRecorderService,
                                         string tokenUri,
                                         string clientId,
                                         string clientSecret,
@@ -35,6 +37,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
         {
             _dateService = dateTimeWrapper;
             _postUrlEncodedService = postUrlFormEncodedService;
+            _responseRecorder = responseRecorderService;
             _tokenUri = tokenUri;
             _clientId = clientId;
             _clientSecret = clientSecret;
@@ -70,6 +73,8 @@ namespace TesterCall.Services.Usage.AuthStrategies
                     _lastResponseTime = response.responseTime;
 
                     _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
+
+                    _responseRecorder.RecordIfRequired(this);
                 } catch (Exception e)
                 {
                     //assumes this is due to refresh token expiry - may be wrong
@@ -94,6 +99,8 @@ namespace TesterCall.Services.Usage.AuthStrategies
                 _lastResponseTime = response.responseTime;
 
                 _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
+
+                _responseRecorder.RecordIfRequired(this);
             }
 
             return $"{_lastResponse.TokenType} {_lastResponse.AccessToken}";
