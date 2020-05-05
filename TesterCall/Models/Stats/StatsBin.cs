@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TesterCall.Models.Interfaces;
 
 namespace TesterCall.Models.Stats
 {
@@ -25,6 +26,6 @@ namespace TesterCall.Models.Stats
                                         $"{_rootName}_{_nameIteration}" :
                                         _rootName;
 
-        public List<ResponseContentModel> Responses { get; set; } = new List<ResponseContentModel>();
+        public List<IHasResponseTime> Responses { get; set; } = new List<IHasResponseTime>();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TesterCall.Models;
+using TesterCall.Models.Interfaces;
 using TesterCall.Models.Stats;
 
 namespace TesterCall.Holders
@@ -51,12 +52,20 @@ namespace TesterCall.Holders
             _activeBin = null;
         }
 
-        public static void Add(ResponseContentModel responseContent)
+        public static void Add(IHasResponseTime responseContent)
         {
             if (_activeBin != null)
             {
                 _activeBin.Responses.Add(responseContent);
             }
+        }
+
+        public static void FlushAll()
+        {
+            _activeBin = null;
+            Bins = new List<StatsBin>();
+            _recording = false;
+            _currentNameIncrementStore = new Dictionary<string, int>();
         }
     }
 }

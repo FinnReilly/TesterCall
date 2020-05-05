@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using TesterCall.Holders;
 using TesterCall.Models;
+using TesterCall.Models.Stats;
 
 namespace TesterCall.Tests.Holders
 {
@@ -25,7 +26,6 @@ namespace TesterCall.Tests.Holders
         {
             _response = new ResponseContentModel(new TimeSpan(1000),
                                                 new TestResponseType());
-
         }
 
         [TestMethod]
@@ -47,6 +47,7 @@ namespace TesterCall.Tests.Holders
                                 .Responses
                                 .Contains(_response)
                                 .Should().BeTrue();
+            CleanUpHolder();
         }
 
         [TestMethod]
@@ -68,6 +69,8 @@ namespace TesterCall.Tests.Holders
             bin.RecordingFinished.Should().HaveValue();
             bin.RecordingFinished.Should().BeAfter(bin.RecordingStarted);
             bin.Responses.Should().Contain(_response);
+
+            CleanUpHolder();
         }
 
         [TestMethod]
@@ -101,6 +104,13 @@ namespace TesterCall.Tests.Holders
             secondBin.RecordingFinished.Should().HaveValue();
             secondBin.RecordingFinished.Should().BeAfter(secondBin.RecordingStarted);
             secondBin.Responses.Should().Contain(_response);
+
+            CleanUpHolder();
+        }
+
+        private void CleanUpHolder()
+        {
+            StatsBinHolder.FlushAll();
         }
     }
 }
