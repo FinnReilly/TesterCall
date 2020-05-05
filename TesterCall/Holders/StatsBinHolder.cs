@@ -16,6 +16,7 @@ namespace TesterCall.Holders
 
         public static bool Recording => _recording;
         public static List<StatsBin> Bins { get; set; } = new List<StatsBin>();
+        public static StatsBin ActiveBin => _activeBin;
 
         public static void StartRecording(string binName)
         {
