@@ -19,6 +19,7 @@ namespace TesterCall
     {
         private IDateTimeWrapper _dateService;
         private IPostUrlFormEncodedService _postUrlEncodedService;
+        private IResponseRecorderService _responseRecorder;
 
         [Alias("Uri")]
         [Parameter(Mandatory = true,
@@ -61,12 +62,18 @@ namespace TesterCall
                                                                         new HttpClientWrapper(),
                                                                         _dateService);
             }
+
+            if (_responseRecorder == null)
+            {
+                _responseRecorder = new ResponseRecorderService();
+            }
         }
 
         protected override void ProcessRecord()
         {
             var output = new Oauth2PasswordCredentials(_dateService,
                                                         _postUrlEncodedService,
+                                                        _responseRecorder,
                                                         TokenUri,
                                                         ClientId,
                                                         ClientSecret,

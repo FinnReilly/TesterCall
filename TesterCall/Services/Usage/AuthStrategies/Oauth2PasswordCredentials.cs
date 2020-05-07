@@ -11,7 +11,7 @@ using TesterCall.Services.UtilsAndWrappers.Interfaces;
 
 namespace TesterCall.Services.Usage.AuthStrategies
 {
-    public class Oauth2PasswordCredentials : IGetAuthorisationHeaderStrategy, IHasResponseTime
+    public class Oauth2PasswordCredentials : IGetAuthorisationHeaderStrategy
     {
         private readonly IDateTimeWrapper _dateService;
         private readonly IPostUrlFormEncodedService _postUrlEncodedService;
@@ -69,12 +69,7 @@ namespace TesterCall.Services.Usage.AuthStrategies
                                                                                         { "grant_type", "refresh_token" },
                                                                                         { "refresh_token", _lastResponse.RefreshToken }
                                                                                     });
-                    _lastResponse = response.response;
-                    _lastResponseTime = response.responseTime;
-
-                    _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
-
-                    _responseRecorder.RecordIfRequired(this);
+                    UpdateFromResponse(response);
                 } catch (Exception e)
                 {
                     //assumes this is due to refresh token expiry - may be wrong
@@ -95,15 +90,19 @@ namespace TesterCall.Services.Usage.AuthStrategies
                                                                                     { "username", _userName },
                                                                                     { "password", _password }
                                                                                 });
-                _lastResponse = response.response;
-                _lastResponseTime = response.responseTime;
-
-                _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
-
-                _responseRecorder.RecordIfRequired(this);
+                UpdateFromResponse(response);
             }
 
             return $"{_lastResponse.TokenType} {_lastResponse.AccessToken}";
+        }
+
+        private void UpdateFromResponse((TimeSpan responseTime, Oauth2PasswordResponse response) tuple)
+        {
+            tuple.response.ResponseTime = tuple.responseTime;
+            _lastResponse = tuple.response;
+            _lastResponseTime = tuple.responseTime;
+            _expiryTime = _dateService.Now.AddSeconds(_lastResponse.ExpiresIn - 5);
+            _responseRecorder.RecordIfRequired(tuple.response);
         }
     }
 }

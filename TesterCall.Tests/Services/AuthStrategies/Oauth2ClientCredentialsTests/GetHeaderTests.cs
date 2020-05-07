@@ -18,6 +18,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2ClientCredentialsTests
     {
         private Mock<IDateTimeWrapper> _dateService;
         private Mock<IPostUrlFormEncodedService> _postUrlEncodedService;
+        private Mock<IResponseRecorderService> _responseRecorder;
 
         private Oauth2ClientCredentials _service;
 
@@ -37,6 +38,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2ClientCredentialsTests
         {
             _dateService = new Mock<IDateTimeWrapper>();
             _postUrlEncodedService = new Mock<IPostUrlFormEncodedService>();
+            _responseRecorder = new Mock<IResponseRecorderService>();
 
             _tokenUri = Guid.NewGuid().ToString();
             _clientId = Guid.NewGuid().ToString();
@@ -45,6 +47,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2ClientCredentialsTests
 
             _service = new Oauth2ClientCredentials(_dateService.Object,
                                                     _postUrlEncodedService.Object,
+                                                    _responseRecorder.Object,
                                                     _tokenUri,
                                                     _clientId,
                                                     _clientSecret);
@@ -82,6 +85,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2ClientCredentialsTests
                                                                                                                                 && dict["client_secret"] == _clientSecret
                                                                                                                                 && dict.ContainsKey("grant_type")
                                                                                                                                 && dict["grant_type"] == "client_credentials")));
+            _responseRecorder.Verify(r => r.RecordIfRequired(It.Is<Oauth2BaseResponse>(resp => resp.ResponseTime == _responseTime)), Times.Once);
             output.Should().Be($"Bearer {_returnedToken}");
             _service.LastResponse.Should().Be(_returnedResponse);
             _service.ExpectedExpiry.Should().Be(expectedExpiry);
@@ -102,6 +106,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2ClientCredentialsTests
 
             var output = await _service.GetHeader();
 
+            _responseRecorder.Verify(r => r.RecordIfRequired(It.IsAny<Oauth2BaseResponse>()), Times.Once);
             output.Should().Be(expectedHeader);
             _service.LastResponse.Should().Be(_returnedResponse);
             _service.ExpectedExpiry.Should().Be(expectedExpiry);
@@ -129,6 +134,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2ClientCredentialsTests
 
             var output = await _service.GetHeader();
 
+            _responseRecorder.Verify(r => r.RecordIfRequired(It.IsAny<Oauth2BaseResponse>()), Times.Exactly(2));
             output.Should().Be(expectedHeader);
             _service.LastResponse.Should().Be(newResult);
             _service.ResponseTime.Should().Be(_responseTime);

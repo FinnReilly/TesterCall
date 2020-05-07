@@ -18,6 +18,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
     { 
         private Mock<IDateTimeWrapper> _dateService;
         private Mock<IPostUrlFormEncodedService> _postUrlEncodedService;
+        private Mock<IResponseRecorderService> _responseRecorder;
 
         private string _tokenUri;
         private string _clientId;
@@ -40,6 +41,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
         {
             _dateService = new Mock<IDateTimeWrapper>();
             _postUrlEncodedService = new Mock<IPostUrlFormEncodedService>();
+            _responseRecorder = new Mock<IResponseRecorderService>();
 
             _tokenUri = Guid.NewGuid().ToString();
             _clientId = Guid.NewGuid().ToString();
@@ -49,6 +51,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
 
             _service = new Oauth2PasswordCredentials(_dateService.Object,
                                                         _postUrlEncodedService.Object,
+                                                        _responseRecorder.Object,
                                                         _tokenUri,
                                                         _clientId,
                                                         _clientSecret,
@@ -79,6 +82,8 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
         {
             var output = await _service.GetHeader();
 
+            _responseRecorder.Verify(r => r.RecordIfRequired(It.Is<Oauth2PasswordResponse>(resp => resp.ResponseTime == _responseTime
+                                                                                                    && resp.AccessToken == _returnedToken)), Times.Once);
             _postUrlEncodedService.Verify(s => s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
                                                                                         It.Is<Dictionary<string, string>>(dict => dict.ContainsKey("client_id")
                                                                                                                                 && dict["client_id"] == _clientId
@@ -122,6 +127,7 @@ namespace TesterCall.Tests.Services.AuthStrategies.Oauth2PasswordCredentialsTest
             _returnedResponse.AccessToken = newToken;
             var output = await _service.GetHeader();
 
+            _responseRecorder.Verify(r => r.RecordIfRequired(It.IsAny<Oauth2PasswordResponse>()), Times.Exactly(2));
             _postUrlEncodedService.Verify(s => s.GetPostResult<Oauth2PasswordResponse>(_tokenUri,
                                                                                        It.Is<Dictionary<string, string>>(dict => dict.ContainsKey("password")
                                                                                                                                && dict["password"] == _password)), Times.Once);
