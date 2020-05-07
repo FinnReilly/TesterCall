@@ -8,6 +8,7 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Enums
     {
         query,
         path,
-        body
+        body,
+        header
     }
 }

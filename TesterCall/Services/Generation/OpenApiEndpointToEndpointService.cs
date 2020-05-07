@@ -33,12 +33,9 @@ namespace TesterCall.Services.Generation
                 Path = inputModel.Path,
                 ShortName = inputModel.ShortName,
                 Method = inputModel.Method,
-                PathParameters = inputModel.Parameters?
-                                            .Where(p => p.In == ParameterIn.path)
-                                            .Select(p => ConvertParameter(p, inputModel)),
-                QueryParameters = inputModel.Parameters?
-                                            .Where(p => p.In == ParameterIn.query)
-                                            .Select(p => ConvertParameter(p, inputModel)),
+                PathParameters = SelectParameterByLocation(inputModel, ParameterIn.path),
+                QueryParameters = SelectParameterByLocation(inputModel, ParameterIn.query),
+                HeaderParameters = SelectParameterByLocation(inputModel, ParameterIn.header),
                 RequestBody = inputModel.RequestBody == null ?
                                             null :
                                             ConvertContent(inputModel.RequestBody,
@@ -55,16 +52,18 @@ namespace TesterCall.Services.Generation
             return output;
         }
 
-        private Parameter ConvertParameter(OpenApiParameter input,
-                                            OpenApiEndpointModel parentEndpoint)
+        private IEnumerable<Parameter> SelectParameterByLocation(OpenApiEndpointModel parentEndpoint,
+                                                                ParameterIn paramIn)
         {
-            return new Parameter()
-            {
-                Name = input.Name,
-                Required = input.Required,
-                Type = _primitiveService.GetType(input.Schema,
-                                                parentEndpoint.ShortName + input.Name)
-            };
+            return parentEndpoint.Parameters?
+                                .Where(p => p.In == paramIn)
+                                .Select(p => new Parameter()
+                                {
+                                    Name = p.Name,
+                                    Required = p.Required,
+                                    Type = _primitiveService.GetType(p.Schema,
+                                                    parentEndpoint.ShortName + p.Name)
+                                });
         }
 
         private Content ConvertContent(OpenApiRequestOrResponseModel input,

@@ -7,6 +7,7 @@ namespace TesterCall.Enums
     public enum ParameterIn
     {
         path,
-        query
+        query,
+        header
     }
 }
