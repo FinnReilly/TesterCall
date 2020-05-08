@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TesterCall.Services.UtilsAndWrappers.Interfaces;
 
-namespace TesterCall.Services.UtilsAndWrappers
+namespace TesterCall.Extensions
 {
-    public class ConvertHashtableToStringObjectDictionaryService : IConvertHashtableToStringObjectDictionaryService
+    public static class HashtableExtensions
     {
-        public Dictionary<string, object> Convert(Hashtable hashtable)
+        public static Dictionary<string, object> AsStringObjectDictionary(this Hashtable hashtable)
         {
             return hashtable.Cast<DictionaryEntry>()
                             .ToDictionary(kvp => (string)kvp.Key,

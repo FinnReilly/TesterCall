@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using TesterCall.Extensions;
 using TesterCall.Services.Usage.Interfaces;
 using TesterCall.Services.UtilsAndWrappers.Interfaces;
 
@@ -24,10 +25,7 @@ namespace TesterCall.Services.Usage
         {
             var createdInstance = Activator.CreateInstance(type);
             var fields = createdInstance.GetType().GetFields();
-            var replacementsDict = replaceFields?.Cast<DictionaryEntry>()
-                                                .ToDictionary(kvp => (string)kvp.Key,
-                                                                kvp => kvp.Value);
-            
+            var replacementsDict = replaceFields?.AsStringObjectDictionary();
 
             //nb could make better use of dictionary here
             foreach (var field in fields)
