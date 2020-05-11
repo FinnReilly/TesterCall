@@ -10,9 +10,12 @@ namespace TesterCall.Services.Usage.Formatting
     {
         public string UriWithPathParams(string uri, IDictionary<string, string> parameters)
         {
-            foreach (var parameter in parameters)
+            if (parameters != null)
             {
-                uri = Regex.Replace(uri, $"{{{parameter.Key}}}", $"{parameter.Value}");
+                foreach (var parameter in parameters)
+                {
+                    uri = Regex.Replace(uri, $"{{{parameter.Key}}}", $"{parameter.Value}");
+                }
             }
 
             return uri;

@@ -107,5 +107,15 @@ namespace TesterCall
 
             WriteObject(result);
         }
+
+        protected override void EndProcessing()
+        {
+            base.EndProcessing();
+
+            if (_clientWrapper != null)
+            {
+                _clientWrapper.Dispose();
+            }
+        }
     }
 }

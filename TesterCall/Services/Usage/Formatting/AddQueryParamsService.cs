@@ -10,11 +10,17 @@ namespace TesterCall.Services.Usage.Formatting
         public string UriWithQuery(string uri, IDictionary<string, string> parameters)
         {
             var queryParamStrings = new List<string>();
-            foreach (var parameter in parameters)
+
+            string queryString = null;
+            if (parameters != null)
             {
-                queryParamStrings.Add($"{parameter.Key}={parameter.Value}");
+                foreach (var parameter in parameters)
+                {
+                    queryParamStrings.Add($"{parameter.Key}={parameter.Value}");
+                }
+
+                queryString = string.Join("&", queryParamStrings);
             }
-            var queryString = string.Join("&", queryParamStrings);
 
             if (!string.IsNullOrEmpty(queryString))
             {

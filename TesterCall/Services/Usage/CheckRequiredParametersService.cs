@@ -16,9 +16,9 @@ namespace TesterCall.Services.Usage
         {
             var errorContent = new List<string>();
 
-            var requiredQueryParams = endpoint.QueryParameters.Where(p => p.Required);
-            var requiredPathParams = endpoint.PathParameters.Where(p => p.Required);
-            var requiredHeaderParams = endpoint.HeaderParameters.Where(p => p.Required);
+            var requiredQueryParams = endpoint.QueryParameters?.Where(p => p.Required);
+            var requiredPathParams = endpoint.PathParameters?.Where(p => p.Required);
+            var requiredHeaderParams = endpoint.HeaderParameters?.Where(p => p.Required);
             errorContent.Add(CheckParameterGroup(requiredQueryParams,
                                                 queryParams,
                                                 "query"));
@@ -42,11 +42,14 @@ namespace TesterCall.Services.Usage
         {
             var errorString = "";
 
-            foreach (var parameter in required)
+            if (required != null)
             {
-                if (!supplied.TryGetValue(parameter.Name, out var value))
+                foreach (var parameter in required)
                 {
-                    errorString += $"{parameter.Name} in {location} \n";
+                    if (supplied == null || !supplied.TryGetValue(parameter.Name, out var value))
+                    {
+                        errorString += $"{parameter.Name} in {location} \n";
+                    }
                 }
             }
 

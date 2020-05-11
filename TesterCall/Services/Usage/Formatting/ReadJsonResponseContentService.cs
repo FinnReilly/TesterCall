@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,9 @@ namespace TesterCall.Services.Usage.Formatting
         {
             var jsonContent = await response.Content.ReadAsStringAsync();
             var genericMethod = typeof(JsonConvert)
-                                    .GetMethod("DeserializeObject")
+                                    .GetMethods()
+                                    .FirstOrDefault(m => m.IsGenericMethod 
+                                                    && m.Name == "DeserializeObject")
                                     .MakeGenericMethod(_contentType);
 
             return genericMethod.Invoke(obj:null,
