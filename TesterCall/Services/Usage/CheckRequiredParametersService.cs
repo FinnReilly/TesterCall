@@ -10,9 +10,9 @@ namespace TesterCall.Services.Usage
     public class CheckRequiredParametersService : ICheckRequiredParametersService
     {
         public void CheckRequiredParametersPresent(Endpoint endpoint, 
-                                                    IDictionary<string, object> queryParams, 
-                                                    IDictionary<string, object> pathParams, 
-                                                    IDictionary<string, object> headerParams)
+                                                    IDictionary<string, string> queryParams, 
+                                                    IDictionary<string, string> pathParams, 
+                                                    IDictionary<string, string> headerParams)
         {
             var errorContent = new List<string>();
 
@@ -37,7 +37,7 @@ namespace TesterCall.Services.Usage
         }
 
         private string CheckParameterGroup(IEnumerable<Parameter> required, 
-                                            IDictionary<string, object> supplied,
+                                            IDictionary<string, string> supplied,
                                             string location)
         {
             var errorString = "";

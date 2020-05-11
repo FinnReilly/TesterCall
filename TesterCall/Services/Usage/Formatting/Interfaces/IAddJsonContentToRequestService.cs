@@ -4,8 +4,7 @@ using System.Text;
 
 namespace TesterCall.Services.Usage.Formatting.Interfaces
 {
-    public interface IResponseContentServiceFactory
+    public interface IAddJsonContentToRequestService : IAddContentToRequestService
     {
-        IReadResponseContentService GetService(Type type);
     }
 }

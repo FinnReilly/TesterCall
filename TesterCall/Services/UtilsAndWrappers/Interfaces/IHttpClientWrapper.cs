@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TesterCall.Services.UtilsAndWrappers.Interfaces
 {
-    public interface IHttpClientWrapper
+    public interface IHttpClientWrapper : IDisposable
     {
         Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage);
     }

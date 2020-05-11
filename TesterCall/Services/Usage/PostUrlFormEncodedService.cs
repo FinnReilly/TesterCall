@@ -38,10 +38,10 @@ namespace TesterCall.Services.Usage
                 {
                     var endTime = _dateTime.Now;
                     response.EnsureSuccessStatusCode();
-                    var result = await _contentReaderFactory.GetService<TPostResult>()
+                    var result = await _contentReaderFactory.GetService(typeof(TPostResult))
                                                             .ReadContent(response);
 
-                    return (endTime - startTime, result);
+                    return (endTime - startTime, (TPostResult)result);
                 }
             }
         }

@@ -8,12 +8,24 @@ using TesterCall.Services.Usage.Formatting.Interfaces;
 
 namespace TesterCall.Services.Usage.Formatting
 {
-    public class ReadJsonResponseContentService<TContent> : IReadReponseContentService<TContent>
+    public class ReadJsonResponseContentService : IReadResponseContentService
     {
-        public async Task<TContent> ReadContent(HttpResponseMessage response)
+        private readonly Type _contentType;
+
+        public ReadJsonResponseContentService(Type type)
+        {
+            _contentType = type;
+        }
+
+        public async Task<object> ReadContent(HttpResponseMessage response)
         {
             var jsonContent = await response.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<TContent>(jsonContent);
+            var genericMethod = typeof(JsonConvert)
+                                    .GetMethod("DeserializeObject")
+                                    .MakeGenericMethod(_contentType);
+
+            return genericMethod.Invoke(obj:null,
+                                        new object[] { jsonContent });
         }
     }
 }

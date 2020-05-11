@@ -18,8 +18,8 @@ namespace TesterCall.Services.Usage.Formatting
         }
 
         public Uri Generate(string url,
-                                IDictionary<string, string> pathParams,
-                                IDictionary<string, string> queryParams)
+                            IDictionary<string, string> pathParams,
+                            IDictionary<string, string> queryParams)
         {
             return new Uri(_pathParamsService.UriWithPathParams(_queryParamsService.UriWithQuery(url,
                                                                                                 queryParams),

@@ -14,9 +14,9 @@ namespace TesterCall.Tests.Services.Usage.CheckRequiredParametersServiceTests
         private CheckRequiredParametersService _service;
 
         private Endpoint _endpoint;
-        private Dictionary<string, object> _query;
-        private Dictionary<string, object> _path;
-        private Dictionary<string, object> _header;
+        private Dictionary<string, string> _query;
+        private Dictionary<string, string> _path;
+        private Dictionary<string, string> _header;
 
         [TestInitialize]
         public void TestInitialise()
@@ -42,9 +42,9 @@ namespace TesterCall.Tests.Services.Usage.CheckRequiredParametersServiceTests
                 }
             };
 
-            _query = new Dictionary<string, object>();
-            _path = new Dictionary<string, object>();
-            _header = new Dictionary<string, object>();
+            _query = new Dictionary<string, string>();
+            _path = new Dictionary<string, string>();
+            _header = new Dictionary<string, string>();
         }
 
         [TestMethod]

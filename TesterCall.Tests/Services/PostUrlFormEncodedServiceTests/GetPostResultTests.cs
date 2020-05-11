@@ -24,7 +24,7 @@ namespace TesterCall.Tests.Services.PostUrlFormEncodedServiceTests
         private Mock<IResponseContentServiceFactory> _contentReaderFactory;
         private Mock<IHttpClientWrapper> _client;
         private Mock<IDateTimeWrapper> _dateTime;
-        private Mock<IReadReponseContentService<TestOutput>> _returnedContentService;
+        private Mock<IReadResponseContentService> _returnedContentService;
 
         private PostUrlFormEncodedService _service;
 
@@ -42,7 +42,7 @@ namespace TesterCall.Tests.Services.PostUrlFormEncodedServiceTests
             _contentReaderFactory = new Mock<IResponseContentServiceFactory>();
             _client = new Mock<IHttpClientWrapper>();
             _dateTime = new Mock<IDateTimeWrapper>();
-            _returnedContentService = new Mock<IReadReponseContentService<TestOutput>>();
+            _returnedContentService = new Mock<IReadResponseContentService>();
 
             _service = new PostUrlFormEncodedService(_contentReaderFactory.Object,
                                                     _client.Object,
@@ -61,10 +61,10 @@ namespace TesterCall.Tests.Services.PostUrlFormEncodedServiceTests
 
             _client.Setup(c => c.SendAsync(It.IsAny<HttpRequestMessage>()))
                 .Returns(Task.FromResult(_response)).Verifiable();
-            _contentReaderFactory.Setup(f => f.GetService<TestOutput>())
+            _contentReaderFactory.Setup(f => f.GetService(typeof(TestOutput)))
                 .Returns(_returnedContentService.Object).Verifiable();
             _returnedContentService.Setup(s => s.ReadContent(_response))
-                .Returns(Task.FromResult(_finalResult)).Verifiable();
+                .Returns(Task.FromResult((object)_finalResult)).Verifiable();
             _dateTime.Setup(d => d.Now).Returns(() => timeQueue.Dequeue());
         }
 

@@ -7,11 +7,20 @@ namespace TesterCall.Services.Usage.Formatting
 {
     public class ResponseContentServiceFactory : IResponseContentServiceFactory
     {
-        public IReadReponseContentService<TContent> GetService<TContent>()
+        public IReadResponseContentService GetService(Type type)
         {
             //TO DO other non-default conditions
+            if (type == null)
+            {
+                return new ReadNoContentService();
+            }
 
-            return new ReadJsonResponseContentService<TContent>();
+            if (type == typeof(object))
+            {
+                return new ReadJsonToUnknownTypeService();
+            }
+
+            return new ReadJsonResponseContentService(type);
         }
     }
 }

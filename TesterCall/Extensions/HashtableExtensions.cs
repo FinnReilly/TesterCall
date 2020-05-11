@@ -14,5 +14,12 @@ namespace TesterCall.Extensions
                             .ToDictionary(kvp => (string)kvp.Key,
                                             kvp => kvp.Value);
         }
+
+        public static Dictionary<string, string> AsStringStringDictionary(this Hashtable hashtable)
+        {
+            return hashtable.Cast<DictionaryEntry>()
+                            .ToDictionary(kvp => (string)kvp.Key,
+                                            kvp => (string)kvp.Value);
+        }
     }
 }

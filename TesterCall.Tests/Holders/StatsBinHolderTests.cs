@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using TesterCall.Holders;
@@ -25,6 +26,8 @@ namespace TesterCall.Tests.Holders
         public void TestInitialise()
         {
             _response = new ResponseContentModel(new TimeSpan(1000),
+                                                HttpStatusCode.OK,
+                                                new DateTime(),
                                                 new TestResponseType());
         }
 

@@ -20,5 +20,10 @@ namespace TesterCall.Services.UtilsAndWrappers
         {
             return _client.SendAsync(requestMessage);
         }
+
+        public void Dispose()
+        {
+            _client.Dispose();
+        }
     }
 }

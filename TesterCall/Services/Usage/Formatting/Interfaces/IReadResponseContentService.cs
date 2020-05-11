@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace TesterCall.Services.Usage.Formatting.Interfaces
 {
-    public interface IReadReponseContentService<TContent>
+    public interface IReadResponseContentService
     {
-        Task<TContent> ReadContent(HttpResponseMessage response);
+        Task<object> ReadContent(HttpResponseMessage response);
     }
 }
