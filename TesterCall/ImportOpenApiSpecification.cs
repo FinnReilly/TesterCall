@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Management.Automation;
 using System.Text;
 using TesterCall.Powershell;
@@ -15,6 +16,7 @@ namespace TesterCall
     public class ImportOpenApiSpecification : TesterCallCmdlet
     {
         private IImportSpecFromFilePathService _specImportService;
+        private string _pwd;
 
         [Parameter(Mandatory = true,
                     ValueFromPipeline = true,
@@ -25,6 +27,7 @@ namespace TesterCall
         {
             base.BeginProcessing();
 
+            var filePathFormatService = new FilePathFormattingService();
             var jsonTypeParser = new OpenApiUmbrellaJsonTypeParser();
             var jsonObjectParser = new OpenApiJsonObjectParser(jsonTypeParser);
             var lastTokenService = new LastTokenInPathService();
@@ -36,21 +39,28 @@ namespace TesterCall
             var openApiObjectToTypeService = new OpenApiObjectToTypeService(openApiTypeResolver,
                                                                             new StealFieldsFromOpenApiObjectTypeService(openApiTypeResolver),
                                                                             moduleBuilderProvider);
+            using (var session = PowerShell.Create(RunspaceMode.CurrentRunspace))
+            {
+                session.AddCommand("get-location");
+                _pwd = session.Invoke<PathInfo>()
+                                .FirstOrDefault()?.Path;
+            }
 
-            _specImportService = new ImportSpecFromFilePathService(new JsonFileToOpenApiModelService(jsonObjectParser,
-                                                                                                    new OpenApiJsonEndpointsParser(jsonTypeParser,
-                                                                                                                                    jsonObjectParser,
-                                                                                                                                    new EnumFromStringService()),
-                                                                                                    new OpenApiEndpointShortNameService(lastTokenService)),
-                                                                    new OpenApiSpecModelToGeneratedTypesService(openApiObjectToTypeService,
-                                                                                                                new OpenApiEndpointToEndpointService(openApiTypeResolver,
-                                                                                                                                                    openApiPrimitiveService,
-                                                                                                                                                    openApiObjectToTypeService)));
+            _specImportService = new ImportSpecFromFilePathService(filePathFormatService,
+                                                                        new JsonFileToOpenApiModelService(jsonObjectParser,
+                                                                                                        new OpenApiJsonEndpointsParser(jsonTypeParser,
+                                                                                                                                        jsonObjectParser,
+                                                                                                                                        new EnumFromStringService()),
+                                                                                                        new OpenApiEndpointShortNameService(lastTokenService)),
+                                                                        new OpenApiSpecModelToGeneratedTypesService(openApiObjectToTypeService,
+                                                                                                                    new OpenApiEndpointToEndpointService(openApiTypeResolver,
+                                                                                                                                                        openApiPrimitiveService,
+                                                                                                                                                        openApiObjectToTypeService)));
         }
 
         protected override void ProcessRecord()
         {
-            var endpoints  = _specImportService.Import(Path);
+            var endpoints  = _specImportService.Import(Path, _pwd);
 
             WriteObject(endpoints, enumerateCollection: true);
         }

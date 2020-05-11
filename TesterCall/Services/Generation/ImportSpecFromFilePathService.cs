@@ -7,23 +7,31 @@ using TesterCall.Holders;
 using TesterCall.Models.Endpoints;
 using TesterCall.Services.Generation.Interface;
 using TesterCall.Services.Generation.JsonExtraction.Interfaces;
+using TesterCall.Services.Usage.Formatting.Interfaces;
 
 namespace TesterCall.Services.Generation
 {
     public class ImportSpecFromFilePathService : IImportSpecFromFilePathService
     {
+        private readonly IFilePathFormattingService _filePathService;
         private readonly IJsonFileToOpenApiModelService _jsonParseService;
         private readonly IOpenApiSpecModelToGeneratedTypesService _typeGenerationService;
 
-        public ImportSpecFromFilePathService(IJsonFileToOpenApiModelService jsonFileToOpenApiModelService,
+        public ImportSpecFromFilePathService(IFilePathFormattingService filePathFormattingService,
+                                            IJsonFileToOpenApiModelService jsonFileToOpenApiModelService,
                                             IOpenApiSpecModelToGeneratedTypesService openApiSpecModelToGeneratedTypesService)
         {
+            _filePathService = filePathFormattingService;
             _jsonParseService = jsonFileToOpenApiModelService;
             _typeGenerationService = openApiSpecModelToGeneratedTypesService;
         }
 
-        public IEnumerable<Endpoint> Import(string filePath)
+        public IEnumerable<Endpoint> Import(string filePath,
+                                            string pwd)
         {
+            // handle relative paths
+            filePath = _filePathService.FormatPath(filePath, pwd);
+
             if (!filePath.Contains("."))
             {
                 throw new ArgumentException("No file extension detected");
