@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TesterCall.Services.Generation.Interface;
 
 namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
 {
-    public static class JsonCatchAllTypeModelExtensions
+    public static class CatchAllTypeModelExtensions
     {
         private static List<string> _primitiveTypes = new List<string>()
         {
@@ -15,7 +16,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
             "boolean"
         };
 
-        public static bool IsPrimitive(this JsonCatchAllTypeModel model)
+        public static bool IsPrimitive<TModel>(this TModel model)
+            where TModel : IOpenApiCatchAllTypeModel<TModel>
         {
             if (!string.IsNullOrEmpty(model.Type)
                 && _primitiveTypes.Contains(model.Type.ToLowerInvariant()))
@@ -26,7 +28,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
             return false;
         }
 
-        public static bool IsEnum(this JsonCatchAllTypeModel model)
+        public static bool IsEnum<TModel>(this TModel model)
+            where TModel : IOpenApiCatchAllTypeModel<TModel>
         {
             if (model.Enum != null && model.Enum.Any())
             {
@@ -36,7 +39,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
             return false;
         }
 
-        public static bool IsArray(this JsonCatchAllTypeModel model)
+        public static bool IsArray<TModel>(this TModel model)
+            where TModel : IOpenApiCatchAllTypeModel<TModel>
         {
             if (!string.IsNullOrEmpty(model.Type)
                 && model.Type.ToLowerInvariant() == "array"
@@ -48,7 +52,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
             return false;
         }
 
-        public static bool IsObject(this JsonCatchAllTypeModel model)
+        public static bool IsObject<TModel>(this TModel model)
+            where TModel : IOpenApiCatchAllTypeModel<TModel>
         {
             if (!string.IsNullOrEmpty(model.Type)
                 && model.Type.ToLowerInvariant() == "object"
@@ -61,7 +66,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
             return false;
         }
 
-        public static bool IsReference(this JsonCatchAllTypeModel model)
+        public static bool IsReference<TModel>(this TModel model)
+            where TModel : IOpenApiCatchAllTypeModel<TModel>
         {
             if (!string.IsNullOrEmpty(model.Reference))
             {

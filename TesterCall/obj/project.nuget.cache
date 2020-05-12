@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "8b1PsyOBI5EESOosm9K48b+N0pO3KeDCDEtSeoHLSztnicxtvQDRklfhihH3sdxE98pkVtPU1UKaXEKchK3KpA==",
+  "dgSpecHash": "87u5RtxYf88gm6P+jcnZiuCNUAttdpaUPNCvzEpyu5oH5n3GWSU5alZ/sqGUrcXHGQhuhbz71z7VaR5xOpNt6Q==",
   "success": true,
   "projectFilePath": "C:\\Users\\Finn\\repos_general\\TesterCall\\TesterCall\\TesterCall.csproj",
   "expectedPackageFiles": [
@@ -9,7 +9,8 @@
     "C:\\Users\\Finn\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\Finn\\.nuget\\packages\\powershellstandard.library\\7.0.0-preview.1\\powershellstandard.library.7.0.0-preview.1.nupkg.sha512",
     "C:\\Users\\Finn\\.nuget\\packages\\system.reflection.emit\\4.7.0\\system.reflection.emit.4.7.0.nupkg.sha512",
-    "C:\\Users\\Finn\\.nuget\\packages\\system.reflection.emit.ilgeneration\\4.7.0\\system.reflection.emit.ilgeneration.4.7.0.nupkg.sha512"
+    "C:\\Users\\Finn\\.nuget\\packages\\system.reflection.emit.ilgeneration\\4.7.0\\system.reflection.emit.ilgeneration.4.7.0.nupkg.sha512",
+    "C:\\Users\\Finn\\.nuget\\packages\\yamldotnet\\8.1.1\\yamldotnet.8.1.1.nupkg.sha512"
   ],
   "logs": []
 }

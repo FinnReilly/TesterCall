@@ -2,10 +2,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TesterCall.Services.Generation.Interface;
 
 namespace TesterCall.Services.Generation.JsonExtraction.Models
 {
-    public class JsonCatchAllTypeModel
+    public class JsonCatchAllTypeModel : IOpenApiCatchAllTypeModel<JsonCatchAllTypeModel>
     {
         public string Type { get; set; }
         public string Format { get; set; }

@@ -4,21 +4,23 @@ using System.Linq;
 using System.Text;
 using TesterCall.Models.OpenApi;
 using TesterCall.Models.OpenApi.Interfaces;
+using TesterCall.Services.Generation.Interface;
 using TesterCall.Services.Generation.JsonExtraction.Interfaces;
 using TesterCall.Services.Generation.JsonExtraction.Models;
 
 namespace TesterCall.Services.Generation.JsonExtraction
 {
-    public class OpenApiJsonObjectParser : IOpenApiJsonObjectParser
+    public class OpenApiJsonObjectParser<TModel> : IOpenApiSpecObjectParser<TModel> 
+        where TModel : IOpenApiCatchAllTypeModel<TModel>
     {
-        private readonly IOpenApiUmbrellaJsonTypeParser _typeParser;
+        private readonly IOpenApiSpecUmbrellaTypeParser<TModel> _typeParser;
 
-        public OpenApiJsonObjectParser(IOpenApiUmbrellaJsonTypeParser openApiUmbrellaJsonTypeParser)
+        public OpenApiJsonObjectParser(IOpenApiSpecUmbrellaTypeParser<TModel> openApiUmbrellaJsonTypeParser)
         {
             _typeParser = openApiUmbrellaJsonTypeParser;
         }
 
-        public OpenApiObjectType Parse(JsonCatchAllTypeModel model)
+        public OpenApiObjectType Parse(TModel model)
         {
             var output = new OpenApiObjectType() 
             {

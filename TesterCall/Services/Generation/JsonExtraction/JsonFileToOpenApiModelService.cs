@@ -20,11 +20,11 @@ namespace TesterCall.Services.Generation.JsonExtraction
 {
     public class JsonFileToOpenApiModelService : IJsonFileToOpenApiModelService
     {
-        private readonly IOpenApiJsonObjectParser _objectParser;
+        private readonly IOpenApiSpecObjectParser<JsonCatchAllTypeModel> _objectParser;
         private readonly IOpenApiJsonEndpointsParser _endpointsParser;
         private readonly IOpenApiEndpointShortNameService _shortNameService;
 
-        public JsonFileToOpenApiModelService(IOpenApiJsonObjectParser openApiJsonObjectParser,
+        public JsonFileToOpenApiModelService(IOpenApiSpecObjectParser<JsonCatchAllTypeModel> openApiJsonObjectParser,
                                             IOpenApiJsonEndpointsParser openApiJsonEndpointsParser,
                                             IOpenApiEndpointShortNameService openApiEndpointShortNameService)
         {

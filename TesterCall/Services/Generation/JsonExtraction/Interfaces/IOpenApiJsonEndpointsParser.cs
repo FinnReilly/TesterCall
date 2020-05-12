@@ -8,6 +8,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Interfaces
 {
     public interface IOpenApiJsonEndpointsParser
     {
-        IEnumerable<OpenApiEndpointModel> Parse(IDictionary<string, IDictionary<string, JsonEndpointModel>> paths);
+        IEnumerable<OpenApiEndpointModel> Parse(IDictionary<string, 
+                                                            IDictionary<string, 
+                                                                        JsonEndpointModel>> paths);
     }
 }

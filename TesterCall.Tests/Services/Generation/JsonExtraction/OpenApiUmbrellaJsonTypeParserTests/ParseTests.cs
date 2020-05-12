@@ -15,7 +15,7 @@ namespace TesterCall.Tests.Services.Generation.JsonExtraction.OpenApiUmbrellaJso
     // nb this class also tests JsonCatchAllTypeModel extensions
     public class ParseTests
     {
-        private Mock<IOpenApiJsonObjectParser> _objectParser;
+        private Mock<IOpenApiSpecObjectParser> _objectParser;
 
         private OpenApiUmbrellaJsonTypeParser _service;
 
@@ -33,7 +33,7 @@ namespace TesterCall.Tests.Services.Generation.JsonExtraction.OpenApiUmbrellaJso
         [TestInitialize]
         public void TestInitialise()
         {
-            _objectParser = new Mock<IOpenApiJsonObjectParser>();
+            _objectParser = new Mock<IOpenApiSpecObjectParser>();
 
             _service = new OpenApiUmbrellaJsonTypeParser();
 

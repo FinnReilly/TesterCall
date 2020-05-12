@@ -15,12 +15,12 @@ namespace TesterCall.Services.Generation.JsonExtraction
 {
     public class OpenApiJsonEndpointsParser : IOpenApiJsonEndpointsParser
     {
-        private readonly IOpenApiUmbrellaJsonTypeParser _typeParser;
-        private readonly IOpenApiJsonObjectParser _objectParser;
+        private readonly IOpenApiSpecUmbrellaTypeParser<JsonCatchAllTypeModel> _typeParser;
+        private readonly IOpenApiSpecObjectParser<JsonCatchAllTypeModel> _objectParser;
         private readonly IEnumFromStringService _enumService;
 
-        public OpenApiJsonEndpointsParser(IOpenApiUmbrellaJsonTypeParser openApiUmbrellaJsonTypeParser,
-                                        IOpenApiJsonObjectParser openApiJsonObjectParser,
+        public OpenApiJsonEndpointsParser(IOpenApiSpecUmbrellaTypeParser<JsonCatchAllTypeModel> openApiUmbrellaJsonTypeParser,
+                                        IOpenApiSpecObjectParser<JsonCatchAllTypeModel> openApiJsonObjectParser,
                                         IEnumFromStringService enumFromStringService)
         {
             _typeParser = openApiUmbrellaJsonTypeParser;

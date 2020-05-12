@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "e9XIQeSGcGF7pL12JVJHtt5xde0l8H0GUbEBvYWX6kEhG921t5WBghMV4kmNbRMUXyjUOKpb0gDOUieA3F53cw==",
+  "dgSpecHash": "KcdKAI/j5IKzYXpZWLXE4FXtoAqsJkKfGiAf91ei8hiKoZLS4rpLfMGX1ynq2iewQkGdZZVxW7NPqCqkQrvK8A==",
   "success": true,
   "projectFilePath": "C:\\Users\\Finn\\repos_general\\TesterCall\\TesterCall.Tests\\TesterCall.Tests.csproj",
   "expectedPackageFiles": [
@@ -113,7 +113,8 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.xml.xmlserializer\\4.0.11\\system.xml.xmlserializer.4.0.11.nupkg.sha512",
     "C:\\Users\\Finn\\.nuget\\packages\\system.xml.xpath\\4.0.1\\system.xml.xpath.4.0.1.nupkg.sha512",
-    "C:\\Users\\Finn\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512"
+    "C:\\Users\\Finn\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
+    "C:\\Users\\Finn\\.nuget\\packages\\yamldotnet\\8.1.1\\yamldotnet.8.1.1.nupkg.sha512"
   ],
   "logs": []
 }
