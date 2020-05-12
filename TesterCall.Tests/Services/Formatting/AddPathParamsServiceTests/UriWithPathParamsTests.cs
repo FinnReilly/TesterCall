@@ -58,6 +58,14 @@ namespace TesterCall.Tests.Services.Formatting.AddPathParamsServiceTests
         }
 
         [TestMethod]
+        public void ReturnsAsExpectedWithNullParam()
+        {
+            var result = _service.UriWithPathParams(_defaultUrl, null);
+
+            result.Should().Be(_defaultUrl);
+        }
+
+        [TestMethod]
         public void ReturnsAsExpectedWithOneValidParam()
         {
             _inputDictionary["thisIsATest"] = "true";

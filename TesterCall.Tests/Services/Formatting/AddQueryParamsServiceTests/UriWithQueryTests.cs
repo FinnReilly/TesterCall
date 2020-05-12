@@ -43,6 +43,14 @@ namespace TesterCall.Tests.Services.Formatting.AddQueryParamsServiceTests
         }
 
         [TestMethod]
+        public void ReturnsExpectedForNullParams()
+        {
+            var actual = _service.UriWithQuery(_baseUrl, null);
+
+            actual.Should().Be(_baseUrl);
+        }
+
+        [TestMethod]
         public void ReturnsExpectedforMultipleParams()
         {
             _inputDictionary["FirstParam"] = "FirstValue";
