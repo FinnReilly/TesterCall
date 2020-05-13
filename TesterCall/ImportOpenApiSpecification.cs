@@ -28,8 +28,8 @@ namespace TesterCall
             base.BeginProcessing();
 
             var filePathFormatService = new FilePathFormattingService();
-            var jsonTypeParser = new OpenApiUmbrellaJsonTypeParser();
-            var jsonObjectParser = new OpenApiJsonObjectParser(jsonTypeParser);
+            var jsonTypeParser = new OpenApiSpecUmbrellaTypeParser();
+            var jsonObjectParser = new OpenApiSpecObjectParser(jsonTypeParser);
             var lastTokenService = new LastTokenInPathService();
 
             var moduleBuilderProvider = new ModuleBuilderProvider();

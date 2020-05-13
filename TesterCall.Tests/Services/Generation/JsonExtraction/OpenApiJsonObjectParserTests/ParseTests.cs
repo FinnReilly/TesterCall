@@ -16,7 +16,7 @@ namespace TesterCall.Tests.Services.Generation.JsonExtraction.OpenApiJsonObjectP
     {
         private Mock<IOpenApiSpecUmbrellaTypeParser> _typeParser;
 
-        private OpenApiJsonObjectParser _service;
+        private OpenApiSpecObjectParser _service;
 
         private JsonCatchAllTypeModel _inputModel;
         private JsonCatchAllTypeModel _prop1;
@@ -29,7 +29,7 @@ namespace TesterCall.Tests.Services.Generation.JsonExtraction.OpenApiJsonObjectP
         {
             _typeParser = new Mock<IOpenApiSpecUmbrellaTypeParser>();
 
-            _service = new OpenApiJsonObjectParser(_typeParser.Object);
+            _service = new OpenApiSpecObjectParser(_typeParser.Object);
 
             _prop1 = new JsonCatchAllTypeModel();
             _prop2 = new JsonCatchAllTypeModel();

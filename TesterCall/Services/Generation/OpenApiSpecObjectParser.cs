@@ -10,12 +10,12 @@ using TesterCall.Services.Generation.JsonExtraction.Models;
 
 namespace TesterCall.Services.Generation.JsonExtraction
 {
-    public class OpenApiJsonObjectParser<TModel> : IOpenApiSpecObjectParser<TModel> 
+    public class OpenApiSpecObjectParser<TModel> : IOpenApiSpecObjectParser<TModel> 
         where TModel : IOpenApiCatchAllTypeModel<TModel>
     {
         private readonly IOpenApiSpecUmbrellaTypeParser<TModel> _typeParser;
 
-        public OpenApiJsonObjectParser(IOpenApiSpecUmbrellaTypeParser<TModel> openApiUmbrellaJsonTypeParser)
+        public OpenApiSpecObjectParser(IOpenApiSpecUmbrellaTypeParser<TModel> openApiUmbrellaJsonTypeParser)
         {
             _typeParser = openApiUmbrellaJsonTypeParser;
         }

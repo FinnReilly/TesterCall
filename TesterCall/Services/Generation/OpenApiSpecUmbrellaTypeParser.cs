@@ -11,7 +11,7 @@ using TesterCall.Services.Generation.JsonExtraction.Models.Extensions;
 
 namespace TesterCall.Services.Generation.JsonExtraction
 {
-    public class OpenApiUmbrellaJsonTypeParser<TModel> : IOpenApiSpecUmbrellaTypeParser<TModel>
+    public class OpenApiSpecUmbrellaTypeParser<TModel> : IOpenApiSpecUmbrellaTypeParser<TModel>
         where TModel : IOpenApiCatchAllTypeModel<TModel>
     {
         public IOpenApiType Parse(IOpenApiSpecObjectParser<TModel> objectParser, 
