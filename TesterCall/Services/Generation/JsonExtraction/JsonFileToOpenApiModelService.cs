@@ -49,13 +49,19 @@ namespace TesterCall.Services.Generation.JsonExtraction
             output.Info = jsonModel.Info;
 
             output.Definitions = new Dictionary<string, OpenApiObjectType>();
-            foreach (var definedType in jsonModel.Definitions)
+            if (jsonModel.Definitions != null)
             {
-                output.Definitions[definedType.Key] = _objectParser.Parse(definedType.Value);
+                foreach (var definedType in jsonModel.Definitions)
+                {
+                    output.Definitions[definedType.Key] = _objectParser.Parse(definedType.Value);
+                }
             }
 
-            output.Endpoints = _endpointsParser.Parse(jsonModel.Paths);
-            _shortNameService.CreateOrUpdateShortNames(output.Endpoints);
+            if (jsonModel.Paths != null)
+            {
+                output.Endpoints = _endpointsParser.Parse(jsonModel.Paths);
+                _shortNameService.CreateOrUpdateShortNames(output.Endpoints);
+            }
 
             return output;
         }

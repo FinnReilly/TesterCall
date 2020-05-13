@@ -18,8 +18,8 @@ namespace TesterCall.Tests.Services.Generation.JsonExtraction.OpenApiJsonEndpoin
     [TestClass]
     public class ParseTests
     {
-        private Mock<IOpenApiSpecUmbrellaTypeParser> _typeParser;
-        private Mock<IOpenApiSpecObjectParser> _objectParser;
+        private Mock<IOpenApiSpecUmbrellaTypeParser<JsonCatchAllTypeModel>> _typeParser;
+        private Mock<IOpenApiSpecObjectParser<JsonCatchAllTypeModel>> _objectParser;
         private Mock<IEnumFromStringService> _enumService;
 
         private OpenApiJsonEndpointsParser _service;
@@ -33,8 +33,8 @@ namespace TesterCall.Tests.Services.Generation.JsonExtraction.OpenApiJsonEndpoin
         [TestInitialize]
         public void TestInitialise()
         {
-            _typeParser = new Mock<IOpenApiSpecUmbrellaTypeParser>();
-            _objectParser = new Mock<IOpenApiSpecObjectParser>();
+            _typeParser = new Mock<IOpenApiSpecUmbrellaTypeParser<JsonCatchAllTypeModel>>();
+            _objectParser = new Mock<IOpenApiSpecObjectParser<JsonCatchAllTypeModel>>();
             _enumService = new Mock<IEnumFromStringService>();
 
             _service = new OpenApiJsonEndpointsParser(_typeParser.Object,

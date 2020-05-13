@@ -7,6 +7,7 @@ using TesterCall.Powershell;
 using TesterCall.Services.Generation;
 using TesterCall.Services.Generation.Interface;
 using TesterCall.Services.Generation.JsonExtraction;
+using TesterCall.Services.Generation.JsonExtraction.Models;
 using TesterCall.Services.Usage.Formatting;
 using TesterCall.Services.UtilsAndWrappers;
 
@@ -28,8 +29,8 @@ namespace TesterCall
             base.BeginProcessing();
 
             var filePathFormatService = new FilePathFormattingService();
-            var jsonTypeParser = new OpenApiSpecUmbrellaTypeParser();
-            var jsonObjectParser = new OpenApiSpecObjectParser(jsonTypeParser);
+            var jsonTypeParser = new OpenApiSpecUmbrellaTypeParser<JsonCatchAllTypeModel>();
+            var jsonObjectParser = new OpenApiSpecObjectParser<JsonCatchAllTypeModel>(jsonTypeParser);
             var lastTokenService = new LastTokenInPathService();
 
             var moduleBuilderProvider = new ModuleBuilderProvider();
@@ -39,6 +40,7 @@ namespace TesterCall
             var openApiObjectToTypeService = new OpenApiObjectToTypeService(openApiTypeResolver,
                                                                             new StealFieldsFromOpenApiObjectTypeService(openApiTypeResolver),
                                                                             moduleBuilderProvider);
+            //establish current ps session working directory
             using (var session = PowerShell.Create(RunspaceMode.CurrentRunspace))
             {
                 session.AddCommand("get-location");
