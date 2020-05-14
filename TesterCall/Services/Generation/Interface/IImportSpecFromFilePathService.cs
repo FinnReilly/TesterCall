@@ -8,6 +8,7 @@ namespace TesterCall.Services.Generation.Interface
     public interface IImportSpecFromFilePathService
     {
         IEnumerable<Endpoint> Import(string filePath,
+                                    string overwriteTitle,
                                     string pwd);
     }
 }

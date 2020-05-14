@@ -13,6 +13,6 @@ namespace TesterCall.Services.Generation.Interface
                         IObjectsProcessingKeyStore keyStore,
                         TypeBuilder typeBuilder,
                         IEnumerable<IOpenApiType> extendedTypes,
-                        IDictionary<string, OpenApiObjectType> definitions);
+                        IDictionary<string, IOpenApiType> definitions);
     }
 }

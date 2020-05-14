@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TesterCall.Enums;
+using TesterCall.Extensions;
 using TesterCall.Holders;
 using TesterCall.Models;
 using TesterCall.Models.Endpoints;
@@ -68,7 +69,7 @@ namespace TesterCall.Services.Usage.Formatting
         {
             var returnedMessage = new HttpRequestMessage();
 
-            returnedMessage.Method = GetMethod(method);
+            returnedMessage.Method = method.ToHttpMethod();
             returnedMessage.RequestUri = _uriService.Generate(url,
                                                                 pathParams,
                                                                 queryParams);
@@ -83,24 +84,6 @@ namespace TesterCall.Services.Usage.Formatting
                                             authStrategy);
 
             return returnedMessage;
-        }
-
-        private HttpMethod GetMethod(Method method)
-        {
-            switch (method)
-            {
-                case Method.DELETE:
-                    return HttpMethod.Delete;
-                case Method.PATCH:
-                    return new HttpMethod("Patch");
-                case Method.POST:
-                    return HttpMethod.Post;
-                case Method.PUT:
-                    return HttpMethod.Put;
-                case Method.GET:
-                default:
-                    return HttpMethod.Get;
-            }
         }
     }
 }

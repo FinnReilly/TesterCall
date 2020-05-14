@@ -9,6 +9,7 @@ namespace TesterCall.Services.Generation.Interface
 {
     public interface ISpecFileToOpenApiModelService
     {
-        OpenApiSpecModel ExtractSpec(FileStream file);
+        OpenApiSpecModel ExtractSpec(FileStream file,
+                                    string overwriteApiTitle);
     }
 }

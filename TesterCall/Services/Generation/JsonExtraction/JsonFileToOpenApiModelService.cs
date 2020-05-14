@@ -21,19 +21,23 @@ namespace TesterCall.Services.Generation.JsonExtraction
     public class JsonFileToOpenApiModelService : IJsonFileToOpenApiModelService
     {
         private readonly IOpenApiSpecObjectParser<JsonCatchAllTypeModel> _objectParser;
+        private readonly IOpenApiSpecUmbrellaTypeParser<JsonCatchAllTypeModel> _typeParser;
         private readonly IOpenApiJsonEndpointsParser _endpointsParser;
         private readonly IOpenApiEndpointShortNameService _shortNameService;
 
         public JsonFileToOpenApiModelService(IOpenApiSpecObjectParser<JsonCatchAllTypeModel> openApiJsonObjectParser,
+                                            IOpenApiSpecUmbrellaTypeParser<JsonCatchAllTypeModel> openApiSpecUmbrellaTypeParser,
                                             IOpenApiJsonEndpointsParser openApiJsonEndpointsParser,
                                             IOpenApiEndpointShortNameService openApiEndpointShortNameService)
         {
             _objectParser = openApiJsonObjectParser;
+            _typeParser = openApiSpecUmbrellaTypeParser;
             _endpointsParser = openApiJsonEndpointsParser;
             _shortNameService = openApiEndpointShortNameService;
         }
 
-        public OpenApiSpecModel ExtractSpec(FileStream file)
+        public OpenApiSpecModel ExtractSpec(FileStream file,
+                                            string overwriteApiTitle)
         {
             var output = new OpenApiSpecModel();
             var serializer = new JsonSerializer();
@@ -47,13 +51,18 @@ namespace TesterCall.Services.Generation.JsonExtraction
             }
 
             output.Info = jsonModel.Info;
+            if (!string.IsNullOrEmpty(overwriteApiTitle))
+            {
+                output.Info.Title = overwriteApiTitle;
+            }
 
-            output.Definitions = new Dictionary<string, OpenApiObjectType>();
+            output.Definitions = new Dictionary<string, IOpenApiType>();
             if (jsonModel.Definitions != null)
             {
                 foreach (var definedType in jsonModel.Definitions)
                 {
-                    output.Definitions[definedType.Key] = _objectParser.Parse(definedType.Value);
+                    output.Definitions[definedType.Key] = _typeParser.Parse(_objectParser,
+                                                                            definedType.Value);
                 }
             }
 

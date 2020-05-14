@@ -50,17 +50,14 @@ namespace TesterCall.Services.Generation.JsonExtraction
                                                         .FirstOrDefault(p => p.In == JsonParameterIn.body);
                     if (bodyParameter != null)
                     {
-                        if (bodyParameter != null)
+                        returnedEndpoint.RequestBody = new OpenApiRequestOrResponseModel()
                         {
-                            returnedEndpoint.RequestBody = new OpenApiRequestOrResponseModel()
-                            {
-                                Type = jsonEndpoint.Consumes != null && jsonEndpoint.Consumes.Any() ? 
-                                        GetContentType(jsonEndpoint.Consumes) :
-                                        "application/json",
-                                Content = _typeParser.Parse(_objectParser,
-                                                            bodyParameter.Schema)
-                            };
-                        }
+                            Type = jsonEndpoint.Consumes != null && jsonEndpoint.Consumes.Any() ? 
+                                    GetContentType(jsonEndpoint.Consumes) :
+                                    "application/json",
+                            Content = _typeParser.Parse(_objectParser,
+                                                        bodyParameter.Schema)
+                        };
                     }
 
                     if ((jsonEndpoint.Produces != null && jsonEndpoint.Produces.Any())

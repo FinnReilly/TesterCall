@@ -10,12 +10,15 @@ namespace TesterCall.Services.Generation
     public class OpenApiSpecModelToGeneratedTypesService : IOpenApiSpecModelToGeneratedTypesService
     {
         private readonly IOpenApiObjectToTypeService _objectGenerationService;
+        private readonly IOpenApiUmbrellaTypeResolver _typeResolver;
         private readonly IOpenApiEndpointToEndpointService _endpointService;
 
         public OpenApiSpecModelToGeneratedTypesService(IOpenApiObjectToTypeService openApiObjectToTypeService,
+                                                        IOpenApiUmbrellaTypeResolver openApiUmbrellaTypeResolver,
                                                         IOpenApiEndpointToEndpointService openApiEndpointToEndpointService)
         {
             _objectGenerationService = openApiObjectToTypeService;
+            _typeResolver = openApiUmbrellaTypeResolver;
             _endpointService = openApiEndpointToEndpointService;
         }
 
@@ -29,10 +32,11 @@ namespace TesterCall.Services.Generation
             {
                 if (!CurrentTypeHolder.Types.TryGetValue(definition.Key, out var defined))
                 {
-                    CurrentTypeHolder.Types[definition.Key] = _objectGenerationService.GetType(definition.Value,
-                                                                                              inputSpec.Definitions,
-                                                                                              definition.Key,
-                                                                                              keyStore);
+                    CurrentTypeHolder.Types[definition.Key] = _typeResolver.GetType(_objectGenerationService,
+                                                                                    keyStore,
+                                                                                    definition.Value,
+                                                                                    inputSpec.Definitions,
+                                                                                    definition.Key);
 
                 }
             }

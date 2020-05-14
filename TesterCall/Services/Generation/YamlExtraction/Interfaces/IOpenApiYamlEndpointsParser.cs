@@ -9,7 +9,6 @@ namespace TesterCall.Services.Generation.YamlExtraction.Interfaces
     public interface IOpenApiYamlEndpointsParser
     {
         IEnumerable<OpenApiEndpointModel> Parse(IDictionary<string, 
-                                                            IDictionary<string, 
-                                                                        YamlEndpointModel>> paths);
+                                                            YamlPathModel> paths);
     }
 }

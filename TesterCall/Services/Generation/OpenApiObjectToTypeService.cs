@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using TesterCall.Models.OpenApi;
+using TesterCall.Models.OpenApi.Interfaces;
 using TesterCall.Services.Generation.Interface;
 using TesterCall.Services.UtilsAndWrappers.Interfaces;
 
@@ -26,7 +27,7 @@ namespace TesterCall.Services.Generation
         }
 
         public Type GetType(OpenApiObjectType inputObject, 
-                            IDictionary<string, OpenApiObjectType> definitions,
+                            IDictionary<string, IOpenApiType> definitions,
                             string name,
                             IObjectsProcessingKeyStore objectsKeyStore)
         {

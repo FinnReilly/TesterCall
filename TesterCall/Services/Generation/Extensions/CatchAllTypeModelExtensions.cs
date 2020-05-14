@@ -55,10 +55,8 @@ namespace TesterCall.Services.Generation.JsonExtraction.Models.Extensions
         public static bool IsObject<TModel>(this TModel model)
             where TModel : IOpenApiCatchAllTypeModel<TModel>
         {
-            if (!string.IsNullOrEmpty(model.Type)
-                && model.Type.ToLowerInvariant() == "object"
-                && ((model.Properties != null && model.Properties.Any())
-                    || (model.AllOf != null && model.AllOf.Any())))
+            if ((model.Properties != null && model.Properties.Any())
+                    || (model.AllOf != null && model.AllOf.Any()))
             {
                 return true;
             }

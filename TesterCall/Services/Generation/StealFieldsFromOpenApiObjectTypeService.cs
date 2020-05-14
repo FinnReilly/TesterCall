@@ -22,7 +22,7 @@ namespace TesterCall.Services.Generation
                                 IObjectsProcessingKeyStore keyStore,
                                 TypeBuilder typeBuilder, 
                                 IEnumerable<IOpenApiType> extendedTypes,
-                                IDictionary<string, OpenApiObjectType> definitions)
+                                IDictionary<string, IOpenApiType> definitions)
         {
             foreach (var openApiType in extendedTypes)
             {

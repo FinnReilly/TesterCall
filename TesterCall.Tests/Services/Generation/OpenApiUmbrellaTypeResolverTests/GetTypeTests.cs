@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TesterCall.Models.OpenApi;
+using TesterCall.Models.OpenApi.Interfaces;
 using TesterCall.Services.Generation;
 using TesterCall.Services.Generation.Interface;
 
@@ -25,7 +26,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
 
         private OpenApiUmbrellaTypeResolver _service;
 
-        private Dictionary<string, OpenApiObjectType> _definitions;
+        private Dictionary<string, IOpenApiType> _definitions;
         private string _suggestedName;
         private OpenApiPrimitiveType _primitive;
         private OpenApiReferencedType _referenced;
@@ -43,7 +44,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
             _service = new OpenApiUmbrellaTypeResolver(_primitiveService.Object,
                                                         _referenceService.Object);
 
-            _definitions = new Dictionary<string, OpenApiObjectType>();
+            _definitions = new Dictionary<string, IOpenApiType>();
             _suggestedName = Guid.NewGuid().ToString();
             _primitive = new OpenApiPrimitiveType();
             _referenced = new OpenApiReferencedType();
@@ -53,6 +54,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
             _primitiveService.Setup(s => s.GetType(_primitive, It.IsAny<string>()))
                 .Returns(typeof(int));
             _referenceService.Setup(s => s.GetType(_objectService.Object,
+                                                    _service,
                                                     _keyStore.Object,
                                                     _referenced, 
                                                     _definitions))
@@ -88,6 +90,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
                                             _suggestedName);
 
             _referenceService.Verify(s => s.GetType(_objectService.Object, 
+                                                _service,
                                                 _keyStore.Object,
                                                 _referenced, 
                                                 _definitions),
@@ -156,6 +159,7 @@ namespace TesterCall.Tests.Services.Generation.OpenApiUmbrellaTypeResolverTests
                                             _suggestedName);
 
             _referenceService.Verify(s => s.GetType(_objectService.Object,
+                                                    _service,
                                                     _keyStore.Object,
                                                     _referenced,
                                                     _definitions));

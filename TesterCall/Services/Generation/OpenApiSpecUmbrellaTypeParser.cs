@@ -56,7 +56,7 @@ namespace TesterCall.Services.Generation.JsonExtraction
                 };
             }
 
-            throw new NotSupportedException("Error in parsing json representation of OpenApi type");
+            throw new NotSupportedException("Error in parsing representation of OpenApi type");
         }
     }
 }

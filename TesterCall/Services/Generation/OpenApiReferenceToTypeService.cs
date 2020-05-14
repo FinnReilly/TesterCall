@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TesterCall.Holders;
 using TesterCall.Models.OpenApi;
+using TesterCall.Models.OpenApi.Interfaces;
 using TesterCall.Services.Generation.Interface;
 using TesterCall.Services.Usage.Formatting.Interfaces;
 
@@ -19,9 +20,10 @@ namespace TesterCall.Services.Generation
         }
 
         public Type GetType(IOpenApiObjectToTypeService objectService,
+                            IOpenApiUmbrellaTypeResolver typeResolver,
                             IObjectsProcessingKeyStore objectKeyStore,
                             OpenApiReferencedType referencedType, 
-                            IDictionary<string, OpenApiObjectType> definitions)
+                            IDictionary<string, IOpenApiType> definitions)
         {
             var typeName = _lastTokenService.GetLastToken(referencedType.Type);
 
@@ -35,10 +37,11 @@ namespace TesterCall.Services.Generation
                 //handle circular reference
                 objectKeyStore.ThrowIfPresent(typeName);
 
-                var createdType = objectService.GetType(definedNotCreated,
+                var createdType = typeResolver.GetType(objectService,
+                                                        objectKeyStore,
+                                                        definedNotCreated,
                                                         definitions,
-                                                        typeName,
-                                                        objectKeyStore);
+                                                        typeName);
 
                 CurrentTypeHolder.Types[typeName] = createdType;
 

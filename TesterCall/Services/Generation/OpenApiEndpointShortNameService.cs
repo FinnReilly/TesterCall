@@ -32,7 +32,7 @@ namespace TesterCall.Services.Generation
                                                     "({|})",
                                                     "_");
 
-                    endpoint.ShortName = $"{endpoint.Tags.FirstOrDefault()}" +
+                    endpoint.ShortName = $"{endpoint.Tags?.FirstOrDefault()?.Replace(" ","")}" +
                         $"{endpoint.Method}" +
                         $"{lastToken}";
                 }

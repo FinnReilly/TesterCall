@@ -23,7 +23,7 @@ namespace TesterCall.Services.Generation
         public Type GetType(IOpenApiObjectToTypeService objectService,
                             IObjectsProcessingKeyStore objectKeyStore,
                             IOpenApiType openApiType,
-                            IDictionary<string, OpenApiObjectType> definitions,
+                            IDictionary<string, IOpenApiType> definitions,
                             string suggestedObjectName = null)
         {
             if (openApiType is OpenApiPrimitiveType)
@@ -35,6 +35,7 @@ namespace TesterCall.Services.Generation
             if (openApiType.Matches<OpenApiReferencedType>())
             {
                 return _referenceService.GetType(objectService,
+                                                typeResolver:this,
                                                 objectKeyStore,
                                                 (OpenApiReferencedType)openApiType,
                                                 definitions);

@@ -11,7 +11,7 @@ namespace TesterCall.Services.Generation.Interface
         Type GetType(IOpenApiObjectToTypeService objectService,
                     IObjectsProcessingKeyStore objectsProcessingKeyStore,
                     IOpenApiType openApiType,
-                    IDictionary<string, OpenApiObjectType> definitions,
+                    IDictionary<string, IOpenApiType> definitions,
                     // if class, what should name be?
                     string suggestedObjectName = null);
     }

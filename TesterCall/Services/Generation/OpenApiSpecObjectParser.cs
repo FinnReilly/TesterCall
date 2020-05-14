@@ -27,10 +27,13 @@ namespace TesterCall.Services.Generation.JsonExtraction
                 Properties = new Dictionary<string, IOpenApiType>()
             };
 
-            foreach (var prop in model.Properties)
+            if (model.Properties != null)
             {
-                output.Properties[prop.Key] = _typeParser.Parse(this,
-                                                                prop.Value);
+                foreach (var prop in model.Properties)
+                {
+                    output.Properties[prop.Key] = _typeParser.Parse(this,
+                                                                    prop.Value);
+                }
             }
 
             if (model.AllOf != null && model.AllOf.Any())

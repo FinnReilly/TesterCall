@@ -25,6 +25,7 @@ C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\System.Xml.XPath.XmlDocument.dll
+C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\YamlDotNet.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\cs\Microsoft.TestPlatform.CoreUtilities.resources.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\cs\Microsoft.VisualStudio.TestPlatform.ObjectModel.resources.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\de\Microsoft.TestPlatform.CoreUtilities.resources.dll
@@ -94,11 +95,10 @@ C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\TesterCall.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\TesterCall.pdb
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.csprojAssemblyReference.cache
+C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.csproj.CoreCompileInputs.cache
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.AssemblyInfoInputs.cache
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.AssemblyInfo.cs
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.csproj.CopyComplete
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.dll
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.pdb
-C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.csproj.CoreCompileInputs.cache
 C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\obj\Debug\netcoreapp3.1\TesterCall.Tests.genruntimeconfig.cache
-C:\Users\Finn\repos_general\TesterCall\TesterCall.Tests\bin\Debug\netcoreapp3.1\YamlDotNet.dll
