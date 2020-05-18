@@ -38,10 +38,10 @@ namespace TesterCall.Services.Generation
                     throw new NotSupportedException($"Type in All Of property for {typeBuilder.Name} not recognised");
                 }
 
-                foreach (var property in donorType.GetProperties(BindingFlags.Public))
+                foreach (var field in donorType.GetFields(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    typeBuilder.DefineField(property.Name,
-                                            property.PropertyType,
+                    typeBuilder.DefineField(field.Name,
+                                            field.FieldType,
                                             FieldAttributes.Public);
                 }
             }
