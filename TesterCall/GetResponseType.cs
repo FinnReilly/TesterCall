@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -60,7 +61,8 @@ namespace TesterCall
             if (Convert.ToBoolean(AsJson))
             {
                 var jsonOut = JsonConvert.SerializeObject(createdType, 
-                                                            Formatting.Indented);
+                                                            Formatting.Indented,
+                                                            new StringEnumConverter());
 
                 WriteObject(jsonOut);
             }
