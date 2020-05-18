@@ -95,9 +95,9 @@ namespace TesterCall.Services.Generation.YamlExtraction
                 Description = yamlEndpoint.Description
             };
 
-            var bodySchemaDictEntry = yamlEndpoint.RequestBody?.
-                                                    Content?.
-                                                    FirstOrDefault();
+            var bodySchemaDictEntry = yamlEndpoint.RequestBody?
+                                                    .Content?
+                                                    .FirstOrDefault();
 
             if (bodySchemaDictEntry != null)
             {
@@ -129,11 +129,18 @@ namespace TesterCall.Services.Generation.YamlExtraction
                 };
             }
 
-            if (yamlEndpoint.Parameters != null && yamlEndpoint.Parameters.Any())
+            var endpointHasParams = yamlEndpoint.Parameters != null && yamlEndpoint.Parameters.Any();
+            var pathHasParams = pathLevelParams != null && pathLevelParams.Any();
+            if (endpointHasParams || pathHasParams)
             {
-                var parametersOut = ParseParameters(yamlEndpoint.Parameters);
+                var parametersOut = new List<OpenApiParameter>();
 
-                if (pathLevelParams != null && pathLevelParams.Any())
+                if (endpointHasParams)
+                {
+                    parametersOut.AddRange(ParseParameters(yamlEndpoint.Parameters));
+                }
+
+                if (pathHasParams)
                 {
                     parametersOut.AddRange(pathLevelParams);
                 }

@@ -22,9 +22,11 @@ namespace TesterCall.Services.Generation
         {
             foreach (var endpoint in endpoints)
             {
+                var firstTag = endpoint.Tags?.FirstOrDefault()?.Replace(" ", "");
+
                 if (!string.IsNullOrEmpty(endpoint.ShortName))
                 {
-                    endpoint.ShortName = $"{endpoint.Tags.FirstOrDefault()}{endpoint.ShortName}";
+                    endpoint.ShortName = $"{firstTag}{endpoint.ShortName}";
                 }
                 else
                 {
@@ -32,7 +34,7 @@ namespace TesterCall.Services.Generation
                                                     "({|})",
                                                     "_");
 
-                    endpoint.ShortName = $"{endpoint.Tags?.FirstOrDefault()?.Replace(" ","")}" +
+                    endpoint.ShortName = $"{firstTag}" +
                         $"{endpoint.Method}" +
                         $"{lastToken}";
                 }
