@@ -8,8 +8,10 @@ namespace TesterCall.Services.Usage.Interfaces
 {
     public interface IEndpointSearchService
     {
-        IEnumerable<Endpoint> ByShortName(string searchString);
+        IEnumerable<Endpoint> ByShortName(string searchString,
+                                            string apiTagSearchString);
         IEnumerable<Endpoint> ByPathAndMethod(string searchString,
-                                Method? method);
+                                Method? method,
+                                string apiTagSearchString);
     }
 }
