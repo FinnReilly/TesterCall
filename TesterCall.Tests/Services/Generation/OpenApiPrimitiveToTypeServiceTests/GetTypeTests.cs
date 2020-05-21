@@ -49,16 +49,16 @@ namespace TesterCall.Tests.Services.Generation.OpenApiPrimitiveToTypeServiceTest
                                             _nameIfEnum);
 
             _enumService.Verify();
-            output.Should().Be(typeof(ReturnedEnum));
+            output.Should().Be(typeof(ReturnedEnum?));
         }
 
         [TestMethod]
         [DataRow("string", "email", typeof(string))]
         [DataRow("string", null, typeof(string))]
-        [DataRow("string", "date-time", typeof(DateTime))]
-        [DataRow("integer", "", typeof(int))]
-        [DataRow("float", "", typeof(double))]
-        [DataRow("boolean", "", typeof(bool))]
+        [DataRow("string", "date-time", typeof(DateTime?))]
+        [DataRow("integer", "", typeof(int?))]
+        [DataRow("float", "", typeof(double?))]
+        [DataRow("boolean", "", typeof(bool?))]
         public void ReturnsOtherTypesWhereAppropriate(string type,
                                                         string format,
                                                         Type expected)
