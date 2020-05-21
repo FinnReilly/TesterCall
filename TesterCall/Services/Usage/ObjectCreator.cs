@@ -43,6 +43,7 @@ namespace TesterCall.Services.Usage
 
                 if (shouldCreateValue &&
                     field.FieldType.IsClass && 
+                    !IsEnumerable(field.FieldType) &&
                     field.FieldType != typeof(string))
                 {
                     field.SetValue(createdInstance, 
@@ -55,62 +56,9 @@ namespace TesterCall.Services.Usage
                 if (shouldCreateValue
                     && IsEnumerable(field.FieldType))
                 {
-                    var elementType = EnumerableMemberType(field.FieldType);
-                    var elementIsClass = elementType.IsClass && elementType != typeof(string);
-                    var enumerableType = typeof(List<>).MakeGenericType(elementType);
-                    var createdEnumerable = Activator.CreateInstance(enumerableType);
-                    var addMethod = enumerableType.GetMethod("Add", 
-                                                            BindingFlags.Public | BindingFlags.Instance);
-
-                    if (!shouldReplaceValue)
-                    {
-                        var underlyingType = Nullable.GetUnderlyingType(elementType);
-
-                        var singleMember = elementIsClass ? 
-                                                Create(elementType,
-                                                        null,
-                                                        isExample) : 
-                                                underlyingType == null ? 
-                                                    Activator.CreateInstance(elementType) :
-                                                    Activator.CreateInstance(underlyingType);
-
-                        addMethod.Invoke(createdEnumerable,
-                                        new object[] { singleMember });
-                    }
-                    else
-                    {
-                        if (!replacementValue.GetType().IsArray)
-                        {
-                            throw new ArgumentException("Replacement values for an array must be an array");
-                        }
-
-                        if (elementIsClass)
-                        {
-                            if (replacementValue.GetType() != typeof(Hashtable[]))
-                            {
-                                throw new ArgumentException("Replacement values in an array of objects should " +
-                                    "be submitted as an array of Hashtables");
-                            }
-
-                            foreach (var hashTable in (Hashtable[])replacementValue)
-                            {
-                                var memberToAdd = Create(elementType,
-                                                        hashTable,
-                                                        isExample);
-                                addMethod.Invoke(createdEnumerable,
-                                                new object[] { memberToAdd });
-                            }
-                        }
-                        else
-                        {
-                            //handle replacement value types/strings
-                            foreach (var value in (Array)replacementValue)
-                            {
-                                addMethod.Invoke(createdEnumerable,
-                                                new object[] { value });
-                            }
-                        }
-                    }
+                    var createdEnumerable = CreateEnumerable(field.FieldType,
+                                                            isExample,
+                                                            replacementValue);
 
                     field.SetValue(createdInstance, createdEnumerable);
                 }
@@ -157,6 +105,72 @@ namespace TesterCall.Services.Usage
             }
 
             return createdInstance;
+        }
+
+        public object CreateEnumerable(Type type,
+                                        bool isExample,
+                                        object replacementValue)
+        {
+            var elementType = EnumerableMemberType(type);
+            
+            var enumerableType = typeof(List<>).MakeGenericType(elementType);
+            var createdEnumerable = Activator.CreateInstance(enumerableType);
+            var addMethod = enumerableType.GetMethod("Add",
+                                                    BindingFlags.Public | BindingFlags.Instance);
+
+            var elementIsClass = elementType.IsClass && elementType != typeof(string);
+            var shouldReplaceValue = replacementValue != null;
+            if (!shouldReplaceValue)
+            {
+                var underlyingType = Nullable.GetUnderlyingType(elementType);
+
+                var singleMember = elementIsClass ?
+                                        Create(elementType,
+                                                null,
+                                                isExample) :
+                                        underlyingType == null ?
+                                            Activator.CreateInstance(elementType) :
+                                            Activator.CreateInstance(underlyingType);
+
+                addMethod.Invoke(createdEnumerable,
+                                new object[] { singleMember });
+            }
+            else
+            {
+                if (!replacementValue.GetType().IsArray)
+                {
+                    throw new ArgumentException("Replacement values for an array must be an array");
+                }
+
+                if (elementIsClass)
+                {
+                    if (replacementValue.GetType() != typeof(Hashtable[]))
+                    {
+                        throw new ArgumentException("Replacement values in an array of objects should " +
+                            "be submitted as an array of Hashtables");
+                    }
+
+                    foreach (var hashTable in (Hashtable[])replacementValue)
+                    {
+                        var memberToAdd = Create(elementType,
+                                                hashTable,
+                                                isExample);
+                        addMethod.Invoke(createdEnumerable,
+                                        new object[] { memberToAdd });
+                    }
+                }
+                else
+                {
+                    //handle replacement value types/strings
+                    foreach (var value in (Array)replacementValue)
+                    {
+                        addMethod.Invoke(createdEnumerable,
+                                        new object[] { value });
+                    }
+                }
+            }
+
+            return createdEnumerable;
         }
 
         private bool IsEnumerable(Type typeToCheck)

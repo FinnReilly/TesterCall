@@ -36,6 +36,7 @@ namespace TesterCall.Tests.Services.Usage.ObjectCreatorTests
             public int? NullableId;
             public TestInnerClass InnerClass;
             public IEnumerable<TestInnerClass> InnerClasses;
+            public IEnumerable<IEnumerable<TestInnerClass>> InnerInnerClasses;
             public IEnumerable<int> Ints;
             public IEnumerable<int?> NullableInts;
         }
