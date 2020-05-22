@@ -128,13 +128,25 @@ namespace TesterCall.Services.Usage
             {
                 var underlyingType = Nullable.GetUnderlyingType(elementType);
 
-                var singleMember = elementTypeIsClass ?
-                                        Create(elementType,
-                                                null,
-                                                isExample) :
-                                        underlyingType == null ?
-                                            Activator.CreateInstance(elementType) :
-                                            Activator.CreateInstance(underlyingType);
+                object singleMember;
+                if (elementTypeIsClass)
+                {
+                    singleMember = Create(elementType,
+                                            null,
+                                            isExample);
+                }
+                else if (elementTypeIsEnumerable) 
+                {
+                    singleMember = CreateEnumerable(elementType,
+                                                    isExample,
+                                                    null);
+                }
+                else
+                {
+                    singleMember = underlyingType == null ?
+                                    Activator.CreateInstance(elementType) :
+                                    Activator.CreateInstance(underlyingType);
+                }                  
 
                 addMethod.Invoke(createdEnumerable,
                                 new object[] { singleMember });
@@ -165,11 +177,11 @@ namespace TesterCall.Services.Usage
                 }
                 else if (elementTypeIsEnumerable)
                 {
-                    /*if (replacementValue.GetType() != typeof(Array[]))
+                    if (!replacementValue.GetType().GetElementType().IsArray)
                     {
                         throw new ArgumentException("Replacement values in an array of arrays should " +
                             "be submitted as an array of arrays");
-                    }*/
+                    }
 
                     foreach (var enumerable in (object[])replacementValue)
                     {

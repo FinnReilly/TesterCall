@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Extensions;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections;
@@ -302,6 +303,73 @@ namespace TesterCall.Tests.Services.Usage.ObjectCreatorTests
             secondArray.First().Id.Should().Be(24);
             secondArray.First().Name.Should().Be("ArrayElement21");
             secondArray.First().NullableId.Should().BeNull();
+        }
+
+        [TestMethod]
+        public void SingleMemberCreatedInNestedArraysWithExampleMode()
+        {
+            var output = (TestClass)_service.Create(typeof(TestClass),
+                                                    _input,
+                                                    true);
+
+            output.InnerInnerClasses.Count().Should().Be(1);
+            output.InnerInnerClasses.ElementAt(0).Count().Should().Be(1);
+            output.InnerInnerClasses.ElementAt(0).First()
+                                                .NullableDateTime
+                                                .HasValue
+                                                .Should()
+                                                .BeTrue();
+        }
+
+        [TestMethod]
+        public void ThrowsIfArrayValuesNotCorrectlyRepresented()
+        {
+            _input["InnerClasses"] = "Just a string";
+
+            _service.Invoking(s => s.Create(typeof(TestClass),
+                                            _input,
+                                            false))
+                    .Should()
+                    .Throw<ArgumentException>()
+                    .WithMessage("Replacement values for an array must be an array");
+        }
+
+        [TestMethod]
+        public void ThrowsIfArrayOfObjectsNotCorrectlyRepresented()
+        {
+            _input["InnerClasses"] = new string[]
+            {
+                "Just",
+                "some",
+                "strings",
+                "not",
+                "hashtables"
+            };
+
+            _service.Invoking(s => s.Create(typeof(TestClass),
+                                            _input,
+                                            false))
+                    .Should()
+                    .Throw<ArgumentException>()
+                    .WithMessage("Replacement values in an array of objects should " +
+                            "be submitted as an array of Hashtables");
+        }
+
+        [TestMethod]
+        public void ThrowsIfArrayOfArraysNotCorrectlyRepresented()
+        {
+            _input["InnerInnerClasses"] = new int[]
+            {
+                1, 2, 3
+            };
+
+            _service.Invoking(s => s.Create(typeof(TestClass),
+                                            _input,
+                                            false))
+                    .Should()
+                    .Throw<ArgumentException>()
+                    .WithMessage("Replacement values in an array of arrays should " +
+                            "be submitted as an array of arrays");
         }
     }
 }
