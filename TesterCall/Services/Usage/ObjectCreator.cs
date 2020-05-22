@@ -20,12 +20,22 @@ namespace TesterCall.Services.Usage
         }
 
         public object Create(Type type, 
-                            Hashtable replaceFields = null,
+                            object replaceFields = null,
                             bool isExample = false)
         {
+            if (IsEnumerable(type))
+            {
+                return CreateEnumerable(type,
+                                        isExample,
+                                        replaceFields);
+            }
+
             var createdInstance = Activator.CreateInstance(type);
             var fields = createdInstance.GetType().GetFields();
-            var replacementsDict = replaceFields?.AsStringObjectDictionary();
+            var replacementFields = replaceFields != null && replaceFields.GetType() == typeof(Hashtable) ?
+                                    (Hashtable)replaceFields :
+                                    null;
+            var replacementsDict = replacementFields?.AsStringObjectDictionary();
 
             //nb could make better use of dictionary here
             foreach (var field in fields)
@@ -124,7 +134,8 @@ namespace TesterCall.Services.Usage
                                     && elementType != typeof(string)
                                     && !elementTypeIsEnumerable;
             var shouldReplaceValue = replacementValue != null;
-            if (!shouldReplaceValue)
+            if (!shouldReplaceValue
+                && isExample)
             {
                 var underlyingType = Nullable.GetUnderlyingType(elementType);
 
@@ -151,8 +162,9 @@ namespace TesterCall.Services.Usage
                 addMethod.Invoke(createdEnumerable,
                                 new object[] { singleMember });
             }
-            else
+            else if (shouldReplaceValue)
             {
+                // where replacement values are used:
                 if (!replacementValue.GetType().IsArray)
                 {
                     throw new ArgumentException("Replacement values for an array must be an array");
@@ -160,13 +172,9 @@ namespace TesterCall.Services.Usage
 
                 if (elementTypeIsClass)
                 {
-                    if (replacementValue.GetType() != typeof(Hashtable[]))
-                    {
-                        throw new ArgumentException("Replacement values in an array of objects should " +
-                            "be submitted as an array of Hashtables");
-                    }
+                    var debugType = replacementValue.GetType();
 
-                    foreach (var hashTable in (Hashtable[])replacementValue)
+                    foreach (var hashTable in (object[])replacementValue)
                     {
                         var memberToAdd = Create(elementType,
                                                 hashTable,

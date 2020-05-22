@@ -32,9 +32,11 @@ namespace TesterCall
         public SwitchParameter AsJson { get; set; }
         [Parameter(Mandatory = false,
                     ValueFromPipelineByPropertyName = true,
-                    Position = 1)]
+                    Position = 1,
+                    HelpMessage = "May be a hashtable or array depending on whether type is " +
+                                    "object or array")]
         [Alias("Properties", "Props")]
-        public Hashtable ReplaceProperties { get; set; }
+        public object ReplaceProperties { get; set; }
 
         protected override void BeginProcessing()
         {

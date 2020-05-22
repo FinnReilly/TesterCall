@@ -335,27 +335,6 @@ namespace TesterCall.Tests.Services.Usage.ObjectCreatorTests
         }
 
         [TestMethod]
-        public void ThrowsIfArrayOfObjectsNotCorrectlyRepresented()
-        {
-            _input["InnerClasses"] = new string[]
-            {
-                "Just",
-                "some",
-                "strings",
-                "not",
-                "hashtables"
-            };
-
-            _service.Invoking(s => s.Create(typeof(TestClass),
-                                            _input,
-                                            false))
-                    .Should()
-                    .Throw<ArgumentException>()
-                    .WithMessage("Replacement values in an array of objects should " +
-                            "be submitted as an array of Hashtables");
-        }
-
-        [TestMethod]
         public void ThrowsIfArrayOfArraysNotCorrectlyRepresented()
         {
             _input["InnerInnerClasses"] = new int[]
