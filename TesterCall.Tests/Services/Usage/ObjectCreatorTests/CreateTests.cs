@@ -255,5 +255,53 @@ namespace TesterCall.Tests.Services.Usage.ObjectCreatorTests
             output.InnerClass.NullableDateTime.HasValue.Should().BeTrue();
             output.InnerClass.NullableDateTime.Value.Should().Be(expectedDateTime);
         }
+
+        [TestMethod]
+        public void HandlesNestedArraysWithoutExampleMode()
+        {
+            _input["InnerInnerClasses"] = new Hashtable[][]
+            {
+                new Hashtable[]
+                {
+                    new Hashtable(new Dictionary<string, object>()
+                    {
+                        { "Id", 12 },
+                        { "Name", "ArrayElement11" }
+                    }),
+                    new Hashtable(new Dictionary<string, object>()
+                    {
+                        { "Id", 13 },
+                        { "Name", "ArrayElement12" }
+                    })
+                },
+                new Hashtable[]
+                {
+                    new Hashtable(new Dictionary<string, object>()
+                    {
+                        { "Id", 24 },
+                        { "Name", "ArrayElement21" }
+                    })
+                }
+            };
+
+            var output = (TestClass)_service.Create(typeof(TestClass),
+                                                    _input,
+                                                    false);
+
+            output.InnerInnerClasses.Count().Should().Be(2);
+            var firstArray = output.InnerInnerClasses.ElementAt(0);
+            var secondArray = output.InnerInnerClasses.ElementAt(1);
+            firstArray.Count().Should().Be(2);
+            secondArray.Count().Should().Be(1);
+            firstArray.ElementAt(0).Id.Should().Be(12);
+            firstArray.ElementAt(0).Name.Should().Be("ArrayElement11");
+            firstArray.ElementAt(0).NullableId.Should().BeNull();
+            firstArray.ElementAt(1).Id.Should().Be(13);
+            firstArray.ElementAt(1).Name.Should().Be("ArrayElement12");
+            firstArray.ElementAt(1).NullableId.Should().BeNull();
+            secondArray.First().Id.Should().Be(24);
+            secondArray.First().Name.Should().Be("ArrayElement21");
+            secondArray.First().NullableId.Should().BeNull();
+        }
     }
 }

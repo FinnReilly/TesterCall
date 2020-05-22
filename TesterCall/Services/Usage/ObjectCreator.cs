@@ -107,24 +107,28 @@ namespace TesterCall.Services.Usage
             return createdInstance;
         }
 
-        public object CreateEnumerable(Type type,
+        public object CreateEnumerable(Type enumerableType,
                                         bool isExample,
                                         object replacementValue)
         {
-            var elementType = EnumerableMemberType(type);
+            var elementType = EnumerableMemberType(enumerableType);
             
-            var enumerableType = typeof(List<>).MakeGenericType(elementType);
-            var createdEnumerable = Activator.CreateInstance(enumerableType);
-            var addMethod = enumerableType.GetMethod("Add",
-                                                    BindingFlags.Public | BindingFlags.Instance);
+            var genericEnumerableType = typeof(List<>).MakeGenericType(elementType);
+            var createdEnumerable = Activator.CreateInstance(genericEnumerableType);
+            var addMethod = genericEnumerableType.GetMethod("Add",
+                                                            BindingFlags.Public | BindingFlags.Instance);
 
-            var elementIsClass = elementType.IsClass && elementType != typeof(string);
+
+            var elementTypeIsEnumerable = IsEnumerable(elementType);
+            var elementTypeIsClass = elementType.IsClass 
+                                    && elementType != typeof(string)
+                                    && !elementTypeIsEnumerable;
             var shouldReplaceValue = replacementValue != null;
             if (!shouldReplaceValue)
             {
                 var underlyingType = Nullable.GetUnderlyingType(elementType);
 
-                var singleMember = elementIsClass ?
+                var singleMember = elementTypeIsClass ?
                                         Create(elementType,
                                                 null,
                                                 isExample) :
@@ -142,7 +146,7 @@ namespace TesterCall.Services.Usage
                     throw new ArgumentException("Replacement values for an array must be an array");
                 }
 
-                if (elementIsClass)
+                if (elementTypeIsClass)
                 {
                     if (replacementValue.GetType() != typeof(Hashtable[]))
                     {
@@ -155,6 +159,23 @@ namespace TesterCall.Services.Usage
                         var memberToAdd = Create(elementType,
                                                 hashTable,
                                                 isExample);
+                        addMethod.Invoke(createdEnumerable,
+                                        new object[] { memberToAdd });
+                    }
+                }
+                else if (elementTypeIsEnumerable)
+                {
+                    /*if (replacementValue.GetType() != typeof(Array[]))
+                    {
+                        throw new ArgumentException("Replacement values in an array of arrays should " +
+                            "be submitted as an array of arrays");
+                    }*/
+
+                    foreach (var enumerable in (object[])replacementValue)
+                    {
+                        var memberToAdd = CreateEnumerable(elementType,
+                                                            isExample,
+                                                            enumerable);
                         addMethod.Invoke(createdEnumerable,
                                         new object[] { memberToAdd });
                     }
