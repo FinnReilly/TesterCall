@@ -29,6 +29,8 @@ namespace TesterCall.Powershell
             {
                 throw awaitableTask.Exception;
             }
+
+            WriteProgress(null);
         }
 
         protected virtual T AwaitResult<T>(Task<T> awaitableTask,
