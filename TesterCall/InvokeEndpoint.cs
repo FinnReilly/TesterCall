@@ -50,7 +50,8 @@ namespace TesterCall
         [Alias("Body")]
         [Parameter(Mandatory = false,
                     ValueFromPipelineByPropertyName = true,
-                    Position = 4)]
+                    Position = 4,
+                    HelpMessage = "This may be an object of the correct type or an object property map")]
         public object RequestBody { get; set; }
         [Alias("Auth")]
         [Parameter(Mandatory = false,
