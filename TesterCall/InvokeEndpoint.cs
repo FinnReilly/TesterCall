@@ -21,6 +21,7 @@ namespace TesterCall
     public class InvokeEndpoint : TesterCallCmdlet
     {
         private IInvokeOpenApiEndpointService _invocationService;
+        private IObjectCreator _objectCreator;
         private IHttpClientWrapper _clientWrapper;
 
         [Parameter(Mandatory = true,
@@ -90,17 +91,35 @@ namespace TesterCall
                                                                         createMessageService,
                                                                         responseRecorder);
             }
+
+            if (_objectCreator == null)
+            {
+                _objectCreator = new ObjectCreator(new EnumFromStringService());
+            }
         }
 
         protected override void ProcessRecord()
         {
+            var body = RequestBody;
+            if (body != null)
+            {
+                var bodyType = body.GetType();
+                if (bodyType == typeof(Hashtable) || 
+                    bodyType == typeof(Hashtable[]) ||
+                    bodyType == typeof(IEnumerable<>))
+                {
+                    body = _objectCreator.Create(Endpoint.RequestBody.Type, 
+                                                body);
+                }
+            }
+
             var result = AwaitResult(_invocationService.InvokeEndpoint(Endpoint,
                                                                         Environment,
                                                                         QueryParams,
                                                                         PathParams,
                                                                         HeaderParams,
                                                                         AuthStrategy,
-                                                                        RequestBody,
+                                                                        body,
                                                                         AttemptErrorResponseDeserialisation.ToBool()),
                                     $"Invoke Endpoint {Endpoint.ShortName}",
                                     $"Awaiting response from {Endpoint.Path}");

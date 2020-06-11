@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "KcdKAI/j5IKzYXpZWLXE4FXtoAqsJkKfGiAf91ei8hiKoZLS4rpLfMGX1ynq2iewQkGdZZVxW7NPqCqkQrvK8A==",
+  "dgSpecHash": "4bU71U1AlT0s3tmq7N39aRbWtzbSB3IYg3Ro91xujDwzsR6NowhSiEqnyP5ee5FsrK3eaI9Y1Uc0dQN0a9cJpQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\Finn\\repos_general\\TesterCall\\TesterCall.Tests\\TesterCall.Tests.csproj",
   "expectedPackageFiles": [
@@ -114,7 +114,8 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.xml.xmlserializer\\4.0.11\\system.xml.xmlserializer.4.0.11.nupkg.sha512",
     "C:\\Users\\Finn\\.nuget\\packages\\system.xml.xpath\\4.0.1\\system.xml.xpath.4.0.1.nupkg.sha512",
     "C:\\Users\\Finn\\.nuget\\packages\\system.xml.xpath.xmldocument\\4.0.1\\system.xml.xpath.xmldocument.4.0.1.nupkg.sha512",
-    "C:\\Users\\Finn\\.nuget\\packages\\yamldotnet\\8.1.1\\yamldotnet.8.1.1.nupkg.sha512"
+    "C:\\Users\\Finn\\.nuget\\packages\\yamldotnet\\8.1.1\\yamldotnet.8.1.1.nupkg.sha512",
+    "C:\\Users\\Finn\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.2\\microsoft.aspnetcore.app.ref.3.1.2.nupkg.sha512"
   ],
   "logs": []
 }
