@@ -28,7 +28,8 @@ namespace TesterCall.Services.Generation
 
             var stringTypeFormatType = new Dictionary<string, Type>()
             {
-                { "date-time", typeof(DateTime?) }
+                { "date-time", typeof(DateTime?) },
+                { "date", typeof(DateTime?) }
             };
 
             var numberTypeFormatType = new Dictionary<string, Type>()
