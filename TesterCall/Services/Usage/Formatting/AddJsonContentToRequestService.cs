@@ -13,7 +13,12 @@ namespace TesterCall.Services.Usage.Formatting
         public void AddContent(HttpRequestMessage message, 
                                 object model)
         {
-            message.Content = new StringContent(JsonConvert.SerializeObject(model));
+            message.Content = new StringContent(JsonConvert.SerializeObject(model,
+                                                                            new JsonSerializerSettings() { 
+                                                                                DateFormatHandling = DateFormatHandling.IsoDateFormat
+                                                                            }),
+                                                Encoding.UTF8,
+                                                "application/json");
         }
     }
 }
