@@ -48,13 +48,15 @@ namespace TesterCall.Services.Usage.Formatting
                 environment = DefaultTestEnvironmentHolder.Environment;
             }
 
+            var contentService = _contentServiceFactory.GetService(endpoint);
+
             return await CreateMessage(environment.BaseUrl + endpoint.Path,
                                         endpoint.Method,
                                         queryParams,
                                         pathParams,
                                         headerParams,
                                         authStrategy,
-                                        _contentServiceFactory.GetService(endpoint),
+                                        contentService,
                                         content);
         }
 
